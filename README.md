@@ -1,2 +1,2 @@
 # WISE
-DestinE WISE development
+Different scripts for the Destination Earth Wildfires - WISE application
