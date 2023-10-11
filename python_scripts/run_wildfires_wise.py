@@ -3,23 +3,30 @@ import os
 import xarray as xr
 import subprocess
 
+
+# parser etc. to be added in application integration
+
 # creating the parser
-parser = argparse.ArgumentParser(description="Runscript for data notifier job.")
+#parser = argparse.ArgumentParser(description="Runscript for data notifier job.")
 
 # adding year, month and day arguments
-parser.add_argument('-year', required=True, help="Input year", default=1)
-parser.add_argument('-month', required=True, help="Input month", default=2)
-parser.add_argument('-day', required=True, help="Input day", default=3)
+#parser.add_argument('-year', required=True, help="Input year", default=1)
+#parser.add_argument('-month', required=True, help="Input month", default=2)
+#parser.add_argument('-day', required=True, help="Input day", default=3)
 
 # parsing the arguments
-args = parser.parse_args()
-year = args.year
-month = args.month
-day = args.day
+#args = parser.parse_args()
+#year = args.year
+#month = args.month
+#day = args.day
 
 # defining file input / output paths
 in_path = '/scratch/project_465000454/tmp/a0c1/'
 out_path = '/scratch/project_465000454/kolstela/'
+
+year = '2021'
+month = '07'
+day = '24'
 
 #in_path = '/mnt/d/wise/testset_1/'
 #out_path = '/mnt/d/wise/testset_1/'
