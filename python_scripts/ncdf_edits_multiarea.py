@@ -1,10 +1,17 @@
 # import required packages
+import argparse
 import numpy as np
 import xarray as xr
 import pandas as pd
+import sys
 
 # load netcdf dataset
-dataset = xr.open_dataset('D:/wise/first_week2.nc')
+#dataset = xr.open_dataset('D:/wise/first_week2.nc')
+
+# taking the combined ncdf file as input
+ncdf_file_path = sys.argv[1]
+print(ncdf_file_path)
+dataset = xr.open_dataset(ncdf_file_path)
 
 print('variables:')
 for var_name in dataset.variables:
@@ -144,7 +151,7 @@ df3['HOURLY'] = df3['HOURLY'].dt.strftime('%d/%m/%Y')
 
 # save the new .txt format weather files to their designated job folders for WISE runs
 
-file_path = "D:/wise/weather_"
-df1.to_csv((f"{file_path}area_1.txt"), sep =",", index =False)
-df2.to_csv((f"{file_path}area_2.txt"), sep =",", index =False)
-df3.to_csv((f"{file_path}area_3.txt"), sep =",", index =False)
+file_path = "/mnt/d/wise/wise_area_data/"
+df1.to_csv((f"{file_path}area1/weather.txt"), sep =",", index =False)
+df2.to_csv((f"{file_path}area2/weather.txt"), sep =",", index =False)
+df3.to_csv((f"{file_path}area3/weather.txt"), sep =",", index =False)
