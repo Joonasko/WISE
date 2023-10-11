@@ -18,11 +18,11 @@ month = args.month
 day = args.day
 
 # defining file input / output paths
-#in_path = '/scratch/project_465000454/tmp/a0c1/'
-#out_path = '/scratch/project_465000454/kolstela/'
+in_path = '/scratch/project_465000454/tmp/a0c1/'
+out_path = '/scratch/project_465000454/kolstela/'
 
-in_path = '/mnt/d/wise/testset_1/'
-out_path = '/mnt/d/wise/testset_1/'
+#in_path = '/mnt/d/wise/testset_1/'
+#out_path = '/mnt/d/wise/testset_1/'
 
 
 # Provide the data file name for all variables

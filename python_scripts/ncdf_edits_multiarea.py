@@ -151,7 +151,8 @@ df3['HOURLY'] = df3['HOURLY'].dt.strftime('%d/%m/%Y')
 
 # save the new .txt format weather files to their designated job folders for WISE runs
 
-file_path = "/mnt/d/wise/wise_area_data/"
-df1.to_csv((f"{file_path}area1/weather.txt"), sep =",", index =False)
-df2.to_csv((f"{file_path}area2/weather.txt"), sep =",", index =False)
-df3.to_csv((f"{file_path}area3/weather.txt"), sep =",", index =False)
+#file_path = "/mnt/d/wise/wise_area_data/"
+file_path = "/projappl/project_465000454/kolstela/wise_lumi/testjobs/"
+df1.to_csv((f"{file_path}area1/Inputs/weather.txt"), sep =",", index =False)
+df2.to_csv((f"{file_path}area2/Inputs/weather.txt"), sep =",", index =False)
+df3.to_csv((f"{file_path}area3/Inputs/weather.txt"), sep =",", index =False)
