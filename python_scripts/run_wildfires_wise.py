@@ -63,5 +63,5 @@ combined_nc = xr.Dataset({
 
 combined_nc.to_netcdf(out_path+'combined_ncdf.nc')
 
-cmd = ['python3','/mnt/d/wise/wise_git_working/WISE/python_scripts/ncdf_edits_multiarea.py']
+cmd = ['python3','/scratch/project_465000454/kolstela/a0c1/workflow/wildfires_wise/python_scripts/ncdf_edits_multiarea.py']
 subprocess.run(cmd + [out_path+'combined_ncdf.nc'])
