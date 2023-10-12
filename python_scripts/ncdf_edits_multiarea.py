@@ -90,8 +90,12 @@ combined_datetime_series = pd.Series(combined_datetime_series)
 dates_at_10 = combined_datetime_series[combined_datetime_series.apply(lambda x: x.time() == pd.to_datetime('10:00:00').time())]
 dates_at_21 = combined_datetime_series[combined_datetime_series.apply(lambda x: x.time() == pd.to_datetime('21:00:00').time())]
 
-dates_at_10 = dates_at_10.apply(lambda x: x.strftime('%Y-%m-%dT%H:%M:%S'))
-dates_at_21 = dates_at_21.apply(lambda x: x.strftime('%Y-%m-%dT%H:%M:%S'))
+dates_at_10 = str(dates_at_10.iloc[0])
+dates_at_10 = dates_at_10.replace(' ','T')
+dates_at_21 = str(dates_at_21.iloc[0])
+dates_at_21 = dates_at_21.replace(' ','T')
+dates_at_10 = dates_at_10+':00'
+dates_at_21 = dates_at_21+':00'
 
 df1.reset_index(inplace=True)
 df2.reset_index(inplace=True)
@@ -162,7 +166,7 @@ df1.to_csv((f'{file_path}area1/Inputs/weather.txt'), sep =',', index =False)
 df2.to_csv((f'{file_path}area2/Inputs/weather.txt'), sep =',', index =False)
 df3.to_csv((f'{file_path}area3/Inputs/weather.txt'), sep =',', index =False)
 
-cmd = ['python3','/scratch/project_465000454/kolstela/a0c1/workflow/wildfires_wise/python_scripts/ncdf_edits_multiarea.py']
+cmd = ['python3','/scratch/project_465000454/kolstela/a0c1/workflow/wildfires_wise/python_scripts/modify_fgmj.py']
 #cmd = ['python3','/mnt/d/wise/wise_git_working/WISE/python_scripts/modify_fgmj.py']
 arguments = [str(dates_at_10),str(dates_at_21),str(area1_lat),str(area1_lon),str(area2_lat),str(area2_lon),str(area3_lat),str(area3_lon)]
 print('ncdf_edits_multiarea.py done, starting modify_fgmj.py')

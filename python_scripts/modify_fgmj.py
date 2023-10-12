@@ -16,6 +16,9 @@ scen_name_1 = 'scen_kalajoki'
 scen_name_2 = 'scen_koli'
 scen_name_3 = 'scen_lohja'
 
+#print(start_time)
+#print(end_time)
+
 #with open('/mnt/d/wise/wise_area_data/area1/input.txt', 'r') as f:
 #    lines = f.readlines()
 

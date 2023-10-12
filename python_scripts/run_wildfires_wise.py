@@ -73,7 +73,7 @@ subprocess.run(cmd + [out_path+'combined_ncdf.nc'])
 print('launching WISE runs')
 cmd = ['sh','/projappl/project_465000454/kolstela/wise_lumi/full_run_kalajoki.sh']
 subprocess.run(cmd)
-cmd = ['sh','/projappl/project_465000454/kolstela/wise_lumi/full_run_lohja.sh']
+cmd = ['sh','/projappl/project_465000454/kolstela/wise_lumi/full_run_koli.sh']
 subprocess.run(cmd)
 cmd = ['sh','/projappl/project_465000454/kolstela/wise_lumi/full_run_lieksa.sh']
 subprocess.run(cmd)
