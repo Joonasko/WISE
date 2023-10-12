@@ -24,22 +24,32 @@ import subprocess
 # defining file input / output paths
 in_path = '/scratch/project_465000454/tmp/a0c1/'
 out_path = '/scratch/project_465000454/kolstela/'
-#in_path = '/mnt/d/wise/testset_1/'
-#out_path = '/mnt/d/wise/testset_1/'
+#in_path = '/mnt/d/wise/lumi_testfiles_week/'
+#out_path = '/mnt/d/wise/lumi_testfiles_week/'
 
 
-year = '2021'
-month = '06'
-day = '24'
+year_start = '2021'
+month_start = '06'
+day_start = '24'
+
+year_end = '2021'
+month_end = '06'
+day_end = '30'
+
+# Provide the data file name for all variables (weekly)
+temp_name = f'{year_start}_{month_start}_{day_start}_T00_00_to_{year_end}_{month_end}_{day_end}_T23_00_2t_hourly_raw.nc' # temperature
+dewpoint_name = f'{year_start}_{month_start}_{day_start}_T00_00_to_{year_end}_{month_end}_{day_end}_T23_00_2d_hourly_raw.nc' # dewpoint temperature
+uwind_name  = f'{year_start}_{month_start}_{day_start}_T00_00_to_{year_end}_{month_end}_{day_end}_T23_00_10u_hourly_raw.nc' # u wind
+vwind_name  = f'{year_start}_{month_start}_{day_start}_T00_00_to_{year_end}_{month_end}_{day_end}_T23_00_10v_hourly_raw.nc' # v wind
+precip_name    = f'{year_start}_{month_start}_{day_start}_T00_00_to_{year_end}_{month_end}_{day_end}_T23_00_tp_hourly_raw.nc' # precipitation
 
 
-
-# Provide the data file name for all variables
-temp_name = f'{year}_{month}_{day}_T00_00_to_{year}_{month}_{day}_T23_00_2t_hourly_raw.nc' # temperature
-dewpoint_name = f'{year}_{month}_{day}_T00_00_to_{year}_{month}_{day}_T23_00_2d_hourly_raw.nc' # dewpoint temperature
-uwind_name  = f'{year}_{month}_{day}_T00_00_to_{year}_{month}_{day}_T23_00_10u_hourly_raw.nc' # u wind
-vwind_name  = f'{year}_{month}_{day}_T00_00_to_{year}_{month}_{day}_T23_00_10v_hourly_raw.nc' # v wind
-precip_name    = f'{year}_{month}_{day}_T00_00_to_{year}_{month}_{day}_T23_00_tp_hourly_raw.nc' # precipitation
+# Provide the data file name for all variables (daily)
+#temp_name = f'{year}_{month}_{day}_T00_00_to_{year}_{month}_{day}_T23_00_2t_hourly_raw.nc' # temperature
+#dewpoint_name = f'{year}_{month}_{day}_T00_00_to_{year}_{month}_{day}_T23_00_2d_hourly_raw.nc' # dewpoint temperature
+#uwind_name  = f'{year}_{month}_{day}_T00_00_to_{year}_{month}_{day}_T23_00_10u_hourly_raw.nc' # u wind
+#vwind_name  = f'{year}_{month}_{day}_T00_00_to_{year}_{month}_{day}_T23_00_10v_hourly_raw.nc' # v wind
+#precip_name    = f'{year}_{month}_{day}_T00_00_to_{year}_{month}_{day}_T23_00_tp_hourly_raw.nc' # precipitation
 #out_name    = f'WISE_{year}_{month}_{day}_output.nc'
 #ct_name     = 'WISE_Const.nc'
 
@@ -66,14 +76,17 @@ combined_nc = xr.Dataset({
 combined_nc.to_netcdf(out_path+'combined_ncdf.nc')
 
 cmd = ['python3','/scratch/project_465000454/kolstela/a0c1/workflow/wildfires_wise/python_scripts/ncdf_edits_multiarea.py']
-#cmd = ['python3','/mnt/d/wise/wise_git_working/WISE/python_scripts/ncdf_edits_multiarea.py']
+#cmd = ['python3', '/mnt/d/wise/wise_git_working/WISE/python_scripts/ncdf_edits_multiarea.py']
 print('staring ncdf_edits_multiarea.py')
 subprocess.run(cmd + [out_path+'combined_ncdf.nc'])
 
 print('launching WISE runs')
 cmd = ['sh','/projappl/project_465000454/kolstela/wise_lumi/full_run_kalajoki.sh']
+#cmd = ['sh','/mnt/d/wise/wise_lumi/wise_lumi/full_run_kalajoki.sh']
 subprocess.run(cmd)
 cmd = ['sh','/projappl/project_465000454/kolstela/wise_lumi/full_run_koli.sh']
+#cmd = ['sh','/mnt/d/wise/wise_lumi/wise_lumi/full_run_koli.sh']
 subprocess.run(cmd)
 cmd = ['sh','/projappl/project_465000454/kolstela/wise_lumi/full_run_lieksa.sh']
+#cmd = ['sh','/mnt/d/wise/wise_lumi/wise_lumi/full_run_lieksa.sh']
 subprocess.run(cmd)

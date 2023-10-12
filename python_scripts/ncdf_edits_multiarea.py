@@ -12,9 +12,10 @@ from datetime import datetime
 #dataset = xr.open_dataset('D:/wise/first_week2.nc')
 
 # taking the combined ncdf file as input
-ncdf_file_path = sys.argv[1]
+#ncdf_file_path = sys.argv[1]
 #print(ncdf_file_path)
-dataset = xr.open_dataset(ncdf_file_path)
+#dataset = xr.open_dataset(ncdf_file_path)
+dataset = xr.open_dataset('/scratch/project_465000454/kolstela/combined_ncdf.nc')
 
 #print('variables:')
 #for var_name in dataset.variables:
@@ -48,8 +49,10 @@ dataset['temperature'] = temperature_celsius
 # set the ignition coordinates for 3 areas
 area1_lat = 64.007044
 area1_lon = 24.152986
-area2_lat = 63.045144
-area2_lon = 29.898025
+
+area2_lat = 63.050609
+area2_lon = 29.889436
+
 area3_lat = 63.430860
 area3_lon = 30.545030
 
@@ -87,12 +90,23 @@ combined_datetime_series = pd.to_datetime(df1.index.date) + pd.to_timedelta([tim
 
 combined_datetime_series = pd.Series(combined_datetime_series)
 
+# Reset the index to default integer index
+combined_datetime_series = combined_datetime_series.reset_index(drop=True)
+
+# Now you can use negative indexing to select the last value
+scenario_start = str(combined_datetime_series.iloc[1])
+scenario_end = str(combined_datetime_series.iloc[-2])
+scenario_start = scenario_start.replace(' ','T')
+scenario_end = scenario_end.replace(' ','T')
+scenario_start = scenario_start+':00'
+scenario_end = scenario_end+':00'
+
 dates_at_10 = combined_datetime_series[combined_datetime_series.apply(lambda x: x.time() == pd.to_datetime('10:00:00').time())]
 dates_at_21 = combined_datetime_series[combined_datetime_series.apply(lambda x: x.time() == pd.to_datetime('21:00:00').time())]
 
-dates_at_10 = str(dates_at_10.iloc[0])
+dates_at_10 = str(dates_at_10.iloc[-3])
 dates_at_10 = dates_at_10.replace(' ','T')
-dates_at_21 = str(dates_at_21.iloc[0])
+dates_at_21 = str(dates_at_21.iloc[-1])
 dates_at_21 = dates_at_21.replace(' ','T')
 dates_at_10 = dates_at_10+':00'
 dates_at_21 = dates_at_21+':00'
@@ -160,7 +174,7 @@ df3['HOURLY'] = df3['HOURLY'].dt.strftime('%d/%m/%Y')
 
 # save the new .txt format weather files to their designated job folders for WISE runs
 
-#file_path = '/mnt/d/wise/wise_area_data/testjobs/'
+#file_path = '/mnt/d/wise/wise_lumi/wise_lumi/testjobs/'
 file_path = '/projappl/project_465000454/kolstela/wise_lumi/testjobs/'
 df1.to_csv((f'{file_path}area1/Inputs/weather.txt'), sep =',', index =False)
 df2.to_csv((f'{file_path}area2/Inputs/weather.txt'), sep =',', index =False)
@@ -168,6 +182,6 @@ df3.to_csv((f'{file_path}area3/Inputs/weather.txt'), sep =',', index =False)
 
 cmd = ['python3','/scratch/project_465000454/kolstela/a0c1/workflow/wildfires_wise/python_scripts/modify_fgmj.py']
 #cmd = ['python3','/mnt/d/wise/wise_git_working/WISE/python_scripts/modify_fgmj.py']
-arguments = [str(dates_at_10),str(dates_at_21),str(area1_lat),str(area1_lon),str(area2_lat),str(area2_lon),str(area3_lat),str(area3_lon)]
+arguments = [str(scenario_start),str(scenario_end),str(dates_at_10),str(dates_at_21),str(area1_lat),str(area1_lon),str(area2_lat),str(area2_lon),str(area3_lat),str(area3_lon)]
 print('ncdf_edits_multiarea.py done, starting modify_fgmj.py')
 subprocess.run(cmd + arguments)
