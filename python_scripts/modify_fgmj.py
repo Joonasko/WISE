@@ -12,6 +12,7 @@ ignition_x_2 = float(sys.argv[5])
 ignition_y_2 = float(sys.argv[6])
 ignition_x_3 = float(sys.argv[7])
 ignition_y_3 = float(sys.argv[8])
+
 scen_name_1 = 'scen_kalajoki'
 scen_name_2 = 'scen_koli'
 scen_name_3 = 'scen_lieksa'
