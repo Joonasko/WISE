@@ -1,29 +1,32 @@
+print('running ncdf_edits_multiarea.py')
 # import required packages
 import argparse
 import numpy as np
 import xarray as xr
 import pandas as pd
+import subprocess
 import sys
+from datetime import datetime
 
 # load netcdf dataset
 #dataset = xr.open_dataset('D:/wise/first_week2.nc')
 
 # taking the combined ncdf file as input
 ncdf_file_path = sys.argv[1]
-print(ncdf_file_path)
+#print(ncdf_file_path)
 dataset = xr.open_dataset(ncdf_file_path)
 
-print('variables:')
-for var_name in dataset.variables:
-    print(var_name, dataset.variables[var_name])
+#print('variables:')
+#for var_name in dataset.variables:
+#    print(var_name, dataset.variables[var_name])
 
-print('Dimensions:')
-for dim_name in dataset.dims:
-    print(dim_name, dataset.dims[dim_name])
+#print('Dimensions:')
+#for dim_name in dataset.dims:
+#    print(dim_name, dataset.dims[dim_name])
 
-print('Global Attributes:')
-for attr_name in dataset.attrs:
-    print(attr_name, dataset.attrs[attr_name])
+#print('Global Attributes:')
+#for attr_name in dataset.attrs:
+#    print(attr_name, dataset.attrs[attr_name])
 
 # calculate wind speed and direction from 10u and 10v components
 wind_speed = np.sqrt(dataset['10u']**2 + dataset['10v']**2)
@@ -43,12 +46,12 @@ dataset['relative_humidity'] = relative_humidity
 dataset['temperature'] = temperature_celsius
 
 # set the ignition coordinates for 3 areas
-area1_lat = 60.35
-area1_lon = 25.2
-area2_lat = 58.7
-area2_lon = 15.5
-area3_lat = 71.3
-area3_lon = 39.1
+area1_lat = 64.007044
+area1_lon = 24.152986
+area2_lat = 63.429000
+area2_lon = 30.545000
+area3_lat = 63.040000
+area3_lon = 29.990000
 
 # select only closest cell from netcdf to each ignition location
 nearest_cell1 = dataset.sel(lat=area1_lat,lon=area1_lon,method='nearest')
@@ -85,8 +88,10 @@ combined_datetime_series = pd.to_datetime(df1.index.date) + pd.to_timedelta([tim
 combined_datetime_series = pd.Series(combined_datetime_series)
 
 dates_at_10 = combined_datetime_series[combined_datetime_series.apply(lambda x: x.time() == pd.to_datetime('10:00:00').time())]
-
 dates_at_21 = combined_datetime_series[combined_datetime_series.apply(lambda x: x.time() == pd.to_datetime('21:00:00').time())]
+
+dates_at_10 = dates_at_10.apply(lambda x: x.strftime('%Y-%m-%dT%H:%M:%S'))
+dates_at_21 = dates_at_21.apply(lambda x: x.strftime('%Y-%m-%dT%H:%M:%S'))
 
 df1.reset_index(inplace=True)
 df2.reset_index(inplace=True)
@@ -151,8 +156,14 @@ df3['HOURLY'] = df3['HOURLY'].dt.strftime('%d/%m/%Y')
 
 # save the new .txt format weather files to their designated job folders for WISE runs
 
-#file_path = "/mnt/d/wise/wise_area_data/"
-file_path = "/projappl/project_465000454/kolstela/wise_lumi/testjobs/"
-df1.to_csv((f"{file_path}area1/Inputs/weather.txt"), sep =",", index =False)
-df2.to_csv((f"{file_path}area2/Inputs/weather.txt"), sep =",", index =False)
-df3.to_csv((f"{file_path}area3/Inputs/weather.txt"), sep =",", index =False)
+#file_path = '/mnt/d/wise/wise_area_data/testjobs/'
+file_path = '/projappl/project_465000454/kolstela/wise_lumi/testjobs/'
+df1.to_csv((f'{file_path}area1/Inputs/weather.txt'), sep =',', index =False)
+df2.to_csv((f'{file_path}area2/Inputs/weather.txt'), sep =',', index =False)
+df3.to_csv((f'{file_path}area3/Inputs/weather.txt'), sep =',', index =False)
+
+cmd = ['python3','/scratch/project_465000454/kolstela/a0c1/workflow/wildfires_wise/python_scripts/ncdf_edits_multiarea.py']
+#cmd = ['python3','/mnt/d/wise/wise_git_working/WISE/python_scripts/modify_fgmj.py']
+arguments = [str(dates_at_10),str(dates_at_21),str(area1_lat),str(area1_lon),str(area2_lat),str(area2_lon),str(area3_lat),str(area3_lon)]
+print('ncdf_edits_multiarea.py done, starting modify_fgmj.py')
+subprocess.run(cmd + arguments)
