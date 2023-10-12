@@ -29,7 +29,7 @@ out_path = '/scratch/project_465000454/kolstela/'
 
 
 year = '2021'
-month = '07'
+month = '06'
 day = '24'
 
 

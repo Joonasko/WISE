@@ -48,8 +48,8 @@ dataset['temperature'] = temperature_celsius
 # set the ignition coordinates for 3 areas
 area1_lat = 64.007044
 area1_lon = 24.152986
-area2_lat = 63.429000
-area2_lon = 30.545000
+area2_lat = 63.045144
+area2_lon = 29.898025
 area3_lat = 63.040000
 area3_lon = 29.990000
 
