@@ -18,7 +18,8 @@ Installation:
 No installation is required as the application is installed in a singularity container located in LUMI. The container takes the python scripts (python_scripts_container) as input and uses them to run both input data editing and handles the model runs.
 
 How to run:
-python run_wildfires_wise.py -year 2020 -month 06 -day 24 -expid a0c1
+# start and end times will be defined by the workflow
+python run_wildfires_wise.py -year_start 2021 -year_end 2021 -month_start 06 -month_end 06 -day_start 24 -day_end 30 -expid a0c1
 
 Data request file:
 Data request file is the request.yml file
