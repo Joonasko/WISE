@@ -12,3 +12,11 @@ numpy
 pandas
 sys
 datetime
+json
+
+Installation:
+No installation is required as the application is installed in a singularity container located in LUMI.
+
+How to run:
+python run_wildfires_wise.py -year 2020 -month 06 -day 24 -expid a0c1
+
