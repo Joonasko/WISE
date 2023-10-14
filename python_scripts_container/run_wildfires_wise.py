@@ -1,6 +1,6 @@
-import sys
-
+# import modules
 print('running run_wildfires.py')
+import sys
 import argparse
 import os
 import subprocess
@@ -20,7 +20,6 @@ import csv
 #parser.add_argument('-month_end', required=True, help='Input month', default=5)
 #parser.add_argument('-day_end', required=True, help='Input day', default=6)
 
-
 # parsing the arguments
 #args = parser.parse_args()
 #year_start = str(args.year_start)
@@ -30,6 +29,7 @@ import csv
 #month_end = str(args.month_end)
 #day_end = str(args.day_end)
 
+# placeholder values for manual runs
 year_start = "2020"
 year_end = "2020"
 month_start = "06"
@@ -37,18 +37,8 @@ month_end = "06"
 day_start = "24"
 day_end = "30"
 
+# create .txt file with start and end dates
 all_dates = [year_start,year_end,month_start,month_end,day_start,day_end]
-
-print(all_dates)
-
-#file_name = "/mnt/d/wise/wise_lumi/wise_lumi_files/run_dates.txt"
-#with open(file_name, mode="w",newline="") as file:
-#    writer = csv.writer(file)
-#    writer.writerows(all_dates)
-
-#with open('/mnt/d/wise/wise_lumi/wise_lumi_files/run_dates.txt', 'w') as file:
-#    for element in all_dates:
-#        file.write(element + '\n')
 
 with open('/projappl/project_465000454/kolstela/wise_lumi_container/wise_lumi_files/run_dates.txt', 'w') as file:
     for element in all_dates:
@@ -57,19 +47,7 @@ with open('/projappl/project_465000454/kolstela/wise_lumi_container/wise_lumi_fi
 
 print("Data written to 'formatted_data.txt'")
 
-
-#cmd = [
-#    'singularity',
-#    'exec',
-#    '--bind', '/mnt/d/wise/wise_lumi/wise_lumi_files:/testjobs',
-#    '--bind', '/mnt/d/wise/wise_git_working/WISE/python_scripts_container:/python_scripts',
-#    '--bind', '/containers/wise_2/wise_container_build/wise_outputs:/testjobs/testjobs/area1/Outputs',
-#    '--bind', '/containers/wise_2/wise_container_build/wise_outputs:/testjobs/testjobs/area2/Outputs',
-#    '--bind', '/containers/wise_2/wise_container_build/wise_outputs:/testjobs/testjobs/area3/Outputs',
-#    '--bind', '/mnt/d/wise/lumi_testfiles_week:/input_data',
-#    '/containers/wise_2/wise_container_build/wise_test.sif',
-#    '/python_scripts/run_wise.py'
-#]
+# build the command for running the singularity container wise.sif
 cmd = [
     'singularity',
     'run',
@@ -82,10 +60,7 @@ cmd = [
     '/projappl/project_465000454/kolstela/wise_lumi_container/wise.sif'
 ]
 
-
-
-# Execute the command
+# run the container wise.sif
 print('launching WISE runs')
-
 subprocess.run(cmd)
 

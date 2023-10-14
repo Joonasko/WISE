@@ -1,14 +1,11 @@
 #!/usr/bin/python3
+# import modules
 print('running .fgmj modifier')
-
 import os
 import sys
 import json
 
-#print("sys argv 7")
-#print(sys.argv[7])
-#print("sys argv 8")
-#print(sys.argv[8])
+# take the time and ignition lat lon variables
 scenario_start = sys.argv[1]
 scenario_end = sys.argv[2]
 ignition_start = sys.argv[3]
@@ -20,29 +17,14 @@ ignition_x_2 = float(sys.argv[8])
 ignition_y_3 = float(sys.argv[9])
 ignition_x_3 = float(sys.argv[10])
 
+# set scenario names
 scen_name_1 = 'scen_kalajoki'
 scen_name_2 = 'scen_koli'
 scen_name_3 = 'scen_lieksa'
 
-#print(start_time)
-#print(end_time)
-
-#with open('/mnt/d/wise/wise_area_data/area1/input.txt', 'r') as f:
-#    lines = f.readlines()
-
-#fgmj_dir = lines[0].strip()
-#fgmj_path = '/mnt/d/wise/wise_lumi/wise_lumi/testjobs/job.fgmj'
+# set input fgmj path and read the fgmj files
 fgmj_path = '/testjobs/testjobs/job.fgmj'
 
-#fgmj1_path = '/projappl/project_465000454/kolstela/wise_lumi/testjobs/area1/job.fgmj'
-#fgmj2_path = '/projappl/project_465000454/kolstela/wise_lumi/testjobs/area2/job.fgmj'
-#fgmj3_path = '/projappl/project_465000454/kolstela/wise_lumi/testjobs/area3/job.fgmj'
-
-#filename = 'job.fgmj'
-#fgmj_dir = '/testjobs/job/'
-
-#fgmj_dir = os.path.join(fgmj_dir,filename)
-#print(fgmj_dir)
 
 with open(fgmj_path, 'r') as f:
     fgmj_data1 = json.load(f)
@@ -53,16 +35,7 @@ with open(fgmj_path, 'r') as f:
 with open(fgmj_path, 'r') as f:
     fgmj_data3 = json.load(f)
 
-#scenario_start = lines[1].strip()
-#scenario_end = lines[2].strip()
-#local_start_time = lines[3].strip()
-#start_time = lines[4].strip()
-#end_time = lines[5].strip()
-#ignition_start = lines[6].strip()
-#output_time = scenario_end
-#ignition_x = float(lines[7].strip())
-#ignition_y = float(lines[8].strip())
-
+# set variables
 scenario_start = ignition_start
 scenario_end = scenario_end
 local_start_time = ignition_start
@@ -71,7 +44,7 @@ end_time = scenario_end
 ignition_start = ignition_start
 output_time = scenario_end
 
-
+# function for replacing values in dictionary
 def replace_in_dict(data, find, replace):
     if isinstance(data, dict):
         for key, value in data.items():
@@ -87,7 +60,7 @@ def replace_in_dict(data, find, replace):
             elif isinstance(value, str):
                 data[index] = value.replace(find, replace)
 
-
+# function for editing the job.fgmj files
 def create_job(data_in, job_name, scen_name, ign_lon, ign_lat):
 
     data_in['project']['scenarios']['scenarioData'][0]['startTime']['time'] = scenario_start
@@ -128,10 +101,7 @@ def create_job(data_in, job_name, scen_name, ign_lon, ign_lat):
         json.dump(data_in, f, indent=2)
     print('fgmj file modified')
 
-#create_job(fgmj_data1,'/mnt/d/wise/wise_lumi/wise_lumi/testjobs/area1/job.fgmj',scen_name_1,ignition_x_1,ignition_y_1)
-#create_job(fgmj_data2,'/mnt/d/wise/wise_lumi/wise_lumi/testjobs/area2/job.fgmj',scen_name_2,ignition_x_2,ignition_y_2)
-#create_job(fgmj_data3,'/mnt/d/wise/wise_lumi/wise_lumi/testjobs/area3/job.fgmj',scen_name_3,ignition_x_3,ignition_y_3)
-
+# edit the job.fgmj files and save them in repective directories
 create_job(fgmj_data1,'/testjobs/testjobs/area1/job.fgmj',scen_name_1,ignition_x_1,ignition_y_1)
 create_job(fgmj_data2,'/testjobs/testjobs/area2/job.fgmj',scen_name_2,ignition_x_2,ignition_y_2)
 create_job(fgmj_data3,'/testjobs/testjobs/area3/job.fgmj',scen_name_3,ignition_x_3,ignition_y_3)

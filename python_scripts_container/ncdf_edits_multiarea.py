@@ -1,6 +1,6 @@
 #!/usr/bin/python3
+# import modules
 print('running ncdf_edits_multiarea.py')
-# import required packages
 import argparse
 import numpy as np
 import xarray as xr
@@ -10,25 +10,7 @@ import sys
 from datetime import datetime
 
 # load netcdf dataset
-#dataset = xr.open_dataset('D:/wise/first_week2.nc')
-
-# taking the combined ncdf file as input
-#ncdf_file_path = sys.argv[1]
-#print(ncdf_file_path)
-#dataset = xr.open_dataset(ncdf_file_path)
 dataset = xr.open_dataset('/input_data/combined_ncdf.nc')
-
-#print('variables:')
-#for var_name in dataset.variables:
-#    print(var_name, dataset.variables[var_name])
-
-#print('Dimensions:')
-#for dim_name in dataset.dims:
-#    print(dim_name, dataset.dims[dim_name])
-
-#print('Global Attributes:')
-#for attr_name in dataset.attrs:
-#    print(attr_name, dataset.attrs[attr_name])
 
 # calculate wind speed and direction from 10u and 10v components
 wind_speed = np.sqrt(dataset['10u']**2 + dataset['10v']**2)
@@ -47,7 +29,7 @@ relative_humidity = 100 * (np.exp((17.625 * dewpoint_celsius) / (243.04 + dewpoi
 dataset['relative_humidity'] = relative_humidity
 dataset['temperature'] = temperature_celsius
 
-# set the ignition coordinates for 3 areas
+# set the ignition coordinates for the three test areas
 area1_lat = 64.007044
 area1_lon = 24.152986
 
@@ -81,6 +63,7 @@ df2['hour'] = df2.index.time
 df3['date'] = df3.index.date
 df3['hour'] = df3.index.time
 
+# remove unused variables
 variables_to_drop = ['10v','10u','2t','2d']
 df1 = df1.drop(variables_to_drop, axis = 1)
 df2 = df2.drop(variables_to_drop, axis = 1)
@@ -88,13 +71,12 @@ df3 = df3.drop(variables_to_drop, axis = 1)
 
 # create datetime series for scenario start and end times (start at each day 10:00 and end same day 21:00)
 combined_datetime_series = pd.to_datetime(df1.index.date) + pd.to_timedelta([time.hour for time in df1.index], unit='h')
-
 combined_datetime_series = pd.Series(combined_datetime_series)
 
-# Reset the index to default integer index
+# reset the index to default integer index
 combined_datetime_series = combined_datetime_series.reset_index(drop=True)
 
-# Now you can use negative indexing to select the last value
+# select scenario start and end dates
 scenario_start = str(combined_datetime_series.iloc[1])
 scenario_end = str(combined_datetime_series.iloc[-2])
 scenario_start = scenario_start.replace(' ','T')
@@ -105,6 +87,7 @@ scenario_end = scenario_end+':00'
 dates_at_10 = combined_datetime_series[combined_datetime_series.apply(lambda x: x.time() == pd.to_datetime('10:00:00').time())]
 dates_at_21 = combined_datetime_series[combined_datetime_series.apply(lambda x: x.time() == pd.to_datetime('21:00:00').time())]
 
+# select the last three dates for model run
 dates_at_10 = str(dates_at_10.iloc[-3])
 dates_at_10 = dates_at_10.replace(' ','T')
 dates_at_21 = str(dates_at_21.iloc[-1])
@@ -153,36 +136,34 @@ df3.rename(columns={
     'tp': 'PRECIP',
 }, inplace=True)
 
-# Convert 'date' to datetime format
+# convert 'date' to datetime format
 df1['HOURLY'] = pd.to_datetime(df1['HOURLY'], format='%d/%m/%Y')
 df2['HOURLY'] = pd.to_datetime(df2['HOURLY'], format='%d/%m/%Y')
 df3['HOURLY'] = pd.to_datetime(df3['HOURLY'], format='%d/%m/%Y')
 
-# Convert 'hour' to integers
+# convert 'hour' to integers
 df1['HOUR'] = df1['HOUR'].apply(lambda x: x.hour).astype(int)
 df2['HOUR'] = df2['HOUR'].apply(lambda x: x.hour).astype(int)
 df3['HOUR'] = df3['HOUR'].apply(lambda x: x.hour).astype(int)
 
-# Round all values to one decimal place
+# round all values to one decimal place
 df1 = df1.round(1)
 df2 = df2.round(1)
 df3 = df3.round(1)
 
-# Format the 'date' column as 'dd/mm/yyyy'
+# format the 'date' column as 'dd/mm/yyyy'
 df1['HOURLY'] = df1['HOURLY'].dt.strftime('%d/%m/%Y')
 df2['HOURLY'] = df2['HOURLY'].dt.strftime('%d/%m/%Y')
 df3['HOURLY'] = df3['HOURLY'].dt.strftime('%d/%m/%Y')
 
 # save the new .txt format weather files to their designated job folders for WISE runs
-
-#file_path = '/mnt/d/wise/wise_lumi/wise_lumi/testjobs/'
 file_path = '/testjobs/testjobs/'
 df1.to_csv((f'{file_path}area1/Inputs/weather.txt'), sep =',', index =False)
 df2.to_csv((f'{file_path}area2/Inputs/weather.txt'), sep =',', index =False)
 df3.to_csv((f'{file_path}area3/Inputs/weather.txt'), sep =',', index =False)
 
+# run the modify_fgmj.py script
 cmd = ['python3','/python_scripts/modify_fgmj.py']
-#cmd = ['python3','/mnt/d/wise/wise_git_working/WISE/python_scripts/modify_fgmj.py']
 arguments = [str(scenario_start),str(scenario_end),str(dates_at_10),str(dates_at_21),str(area1_lat),str(area1_lon),str(area2_lat),str(area2_lon),str(area3_lat),str(area3_lon)]
 print('ncdf_edits_multiarea.py done, starting modify_fgmj.py')
 subprocess.run(cmd + arguments)
