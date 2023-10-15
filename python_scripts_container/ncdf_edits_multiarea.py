@@ -36,8 +36,8 @@ area1_lon = 24.152986
 area2_lat = 63.050609
 area2_lon = 29.889436
 
-area3_lat = 63.433416
-area3_lon = 30.539657
+area3_lat = 63.433749
+area3_lon = 30.540424
 
 # select only closest cell from netcdf to each ignition location
 nearest_cell1 = dataset.sel(lat=area1_lat,lon=area1_lon,method='nearest')
