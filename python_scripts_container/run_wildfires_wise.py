@@ -30,8 +30,8 @@ import csv
 #day_end = str(args.day_end)
 
 # placeholder values for manual runs
-year_start = "2020"
-year_end = "2020"
+year_start = "2021"
+year_end = "2021"
 month_start = "06"
 month_end = "06"
 day_start = "24"
