@@ -30,7 +30,7 @@ day_start = str(args.day_start)
 year_end = str(args.year_end)
 month_end = str(args.month_end)
 day_end = str(args.day_end)
-
+expid = str(args.expid)
 # placeholder values for manual runs
 #year_start = "2021"
 #year_end = "2021"
