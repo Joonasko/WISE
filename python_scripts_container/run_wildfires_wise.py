@@ -11,7 +11,7 @@ import csv
 # creating the parser
 parser = argparse.ArgumentParser(description='Runscript for data notifier job.')
 
-# adding year, month and day arguments
+# adding year, month, day and experiment id arguments
 parser.add_argument('-year_start', required=True, help='Input year start', default=1)
 parser.add_argument('-month_start', required=True, help='Input month start', default=2)
 parser.add_argument('-day_start', required=True, help='Input day start', default=3)
