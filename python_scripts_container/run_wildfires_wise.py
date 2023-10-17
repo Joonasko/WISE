@@ -20,6 +20,8 @@ parser.add_argument('-year_end', required=True, help='Input year end', default=4
 parser.add_argument('-month_end', required=True, help='Input month end', default=5)
 parser.add_argument('-day_end', required=True, help='Input day end', default=6)
 
+parser.add_argument('-expid', required=True, help='experiment id', default=7)
+
 # parsing the arguments
 args = parser.parse_args()
 year_start = str(args.year_start)
@@ -56,7 +58,7 @@ cmd = [
     '--bind', '/projappl/project_465000454/kolstela/wise_lumi_container/wise_outputs:/testjobs/testjobs/area1/Outputs',
     '--bind', '/projappl/project_465000454/kolstela/wise_lumi_container/wise_outputs:/testjobs/testjobs/area2/Outputs',
     '--bind', '/projappl/project_465000454/kolstela/wise_lumi_container/wise_outputs:/testjobs/testjobs/area3/Outputs',
-    '--bind', '/scratch/project_465000454/tmp/a0c1:/input_data',
+    '--bind', '/scratch/project_465000454/tmp/'+expid+':/input_data',
     '/projappl/project_465000454/kolstela/wise_lumi_container/wise.sif'
 ]
 
