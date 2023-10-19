@@ -54,7 +54,6 @@ cmd = [
     'singularity',
     'run',
     '--bind', '/projappl/project_465000454/kolstela/wise_lumi_container/wise_lumi_files:/testjobs',
-    '--bind', '/scratch/project_465000454/kolstela/a0c1/workflow/wildfires_wise/python_scripts_container:/python_scripts',
     '--bind', '/scratch/project_465000454/kolstela/wise_outputs:/testjobs/testjobs/area1/Outputs',
     '--bind', '/scratch/project_465000454/kolstela/wise_outputs:/testjobs/testjobs/area2/Outputs',
     '--bind', '/scratch/project_465000454/kolstela/wise_outputs:/testjobs/testjobs/area3/Outputs',
