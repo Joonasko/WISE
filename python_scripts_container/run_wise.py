@@ -53,8 +53,26 @@ combined_nc = xr.Dataset({
     'tp': precip_var,
 })
 
+file_name = out_path+'combined_ncdf.nc'
+
 # write the new netcdf file
-combined_nc.to_netcdf(out_path+'combined_ncdf.nc')
+combined_nc.to_netcdf(file_name)
+
+# current working dir
+current_directory = os.getcwd()
+
+# get the group id
+directory_stat = os.stat(current_directory)
+
+# get group ownership
+group_owner_gid = directory_stat.st_gid
+
+parent_directory = os.path.dirname(file_name)
+parent_gid = os.stat(parent_directory).st_gid
+
+# change group ownership
+os.chown(file_name, -1, parent_gid)
+
 
 # run the ncdf_edits_multiarea.py script
 cmd = ['python3','/python_scripts/ncdf_edits_multiarea.py']

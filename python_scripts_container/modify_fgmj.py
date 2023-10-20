@@ -112,8 +112,29 @@ scen_name_3 = scen_name_3 + "_" + str(formatted_datetime)
 
 
 # edit the job.fgmj files and save them in repective directories
-create_job(fgmj_data1,'/testjobs/testjobs/area1/job.fgmj',scen_name_1,ignition_x_1,ignition_y_1)
-create_job(fgmj_data2,'/testjobs/testjobs/area2/job.fgmj',scen_name_2,ignition_x_2,ignition_y_2)
-create_job(fgmj_data3,'/testjobs/testjobs/area3/job.fgmj',scen_name_3,ignition_x_3,ignition_y_3)
+file_name1 = '/testjobs/testjobs/area1/job.fgmj'
+file_name2 = '/testjobs/testjobs/area2/job.fgmj'
+file_name3 = '/testjobs/testjobs/area3/job.fgmj'
+create_job(fgmj_data1,file_name1,scen_name_1,ignition_x_1,ignition_y_1)
+create_job(fgmj_data2,file_name2,scen_name_2,ignition_x_2,ignition_y_2)
+create_job(fgmj_data3,file_name3,scen_name_3,ignition_x_3,ignition_y_3)
+
+# current working dir
+current_directory = os.getcwd()
+
+# get the group id
+directory_stat = os.stat(current_directory)
+
+# get group ownership
+group_owner_gid = directory_stat.st_gid
+
+parent_directory = os.path.dirname(file_name)
+parent_gid = os.stat(parent_directory).st_gid
+
+# change group ownership
+os.chown(file_name1, -1, parent_gid)
+os.chown(file_name2, -1, parent_gid)
+os.chown(file_name3, -1, parent_gid)
+
 
 print('modify_fgmj.py done')

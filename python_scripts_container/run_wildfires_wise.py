@@ -42,10 +42,25 @@ expid = str(args.expid)
 # create .txt file with start and end dates
 all_dates = [year_start,year_end,month_start,month_end,day_start,day_end]
 
-with open('/projappl/project_465000454/kolstela/wise_lumi_container/wise_lumi_files/run_dates.txt', 'w') as file:
+file_name = '/projappl/project_465000454/kolstela/wise_lumi_container/wise_lumi_files/run_dates.txt'
+with open(file_name, 'w') as file:
     for element in all_dates:
         file.write(element + '\n')
 
+# current working dir
+current_directory = os.getcwd()
+
+# get the group id
+directory_stat = os.stat(current_directory)
+
+# get group ownership
+group_owner_gid = directory_stat.st_gid
+
+parent_directory = os.path.dirname(file_name)
+parent_gid = os.stat(parent_directory).st_gid
+
+# change group ownership
+os.chown(file_name, -1, parent_gid)
 
 print("Data written to 'formatted_data.txt'")
 
@@ -53,24 +68,13 @@ print("Data written to 'formatted_data.txt'")
 cmd = [
     'singularity',
     'run',
-    '--bind', '/scratch/project_465000454/kolstela/wise_lumi_files:/testjobs',
+    '--bind', '/projappl/project_465000454/kolstela/wise_lumi_container/wise_lumi_files:/testjobs',
     '--bind', '/scratch/project_465000454/kolstela/wise_outputs:/testjobs/testjobs/area1/Outputs',
     '--bind', '/scratch/project_465000454/kolstela/wise_outputs:/testjobs/testjobs/area2/Outputs',
     '--bind', '/scratch/project_465000454/kolstela/wise_outputs:/testjobs/testjobs/area3/Outputs',
     '--bind', '/scratch/project_465000454/tmp/'+expid+':/input_data',
     '/projappl/project_465000454/kolstela/wise_lumi_container/wise.sif'
 ]
-
-#cmd = [
-#    'singularity',
-#    'run',
-#    '--bind', '/projappl/project_465000454/kolstela/wise_lumi_container/wise_lumi_files:/testjobs',
-#    '--bind', '/scratch/project_465000454/kolstela/wise_outputs:/testjobs/testjobs/area1/Outputs',
-#    '--bind', '/scratch/project_465000454/kolstela/wise_outputs:/testjobs/testjobs/area2/Outputs',
-#    '--bind', '/scratch/project_465000454/kolstela/wise_outputs:/testjobs/testjobs/area3/Outputs',
-#    '--bind', '/scratch/project_465000454/tmp/'+expid+':/input_data',
-#    '/projappl/project_465000454/kolstela/wise_lumi_container/wise.sif'
-#]
 
 # run the container wise.sif
 print('launching WISE runs')

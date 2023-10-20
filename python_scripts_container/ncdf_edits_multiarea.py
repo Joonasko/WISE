@@ -158,9 +158,30 @@ df3['HOURLY'] = df3['HOURLY'].dt.strftime('%d/%m/%Y')
 
 # save the new .txt format weather files to their designated job folders for WISE runs
 file_path = '/testjobs/testjobs/'
-df1.to_csv((f'{file_path}area1/Inputs/weather.txt'), sep =',', index =False)
-df2.to_csv((f'{file_path}area2/Inputs/weather.txt'), sep =',', index =False)
-df3.to_csv((f'{file_path}area3/Inputs/weather.txt'), sep =',', index =False)
+file_name1 = f'{file_path}area1/Inputs/weather.txt'
+file_name2 = f'{file_path}area2/Inputs/weather.txt'
+file_name3 = f'{file_path}area3/Inputs/weather.txt'
+df1.to_csv((file_name1), sep =',', index =False)
+df2.to_csv((file_name2), sep =',', index =False)
+df3.to_csv((file_name3), sep =',', index =False)
+
+# current working dir
+current_directory = os.getcwd()
+
+# get the group id
+directory_stat = os.stat(current_directory)
+
+# get group ownership
+group_owner_gid = directory_stat.st_gid
+
+parent_directory = os.path.dirname(file_name)
+parent_gid = os.stat(parent_directory).st_gid
+
+# change group ownership
+os.chown(file_name1, -1, parent_gid)
+os.chown(file_name2, -1, parent_gid)
+os.chown(file_name3, -1, parent_gid)
+
 
 # run the modify_fgmj.py script
 cmd = ['python3','/python_scripts/modify_fgmj.py']
