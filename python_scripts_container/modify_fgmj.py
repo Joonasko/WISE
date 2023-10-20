@@ -4,6 +4,7 @@ print('running .fgmj modifier')
 import os
 import sys
 import json
+from datetime import datetime
 
 # take the time and ignition lat lon variables
 scenario_start = sys.argv[1]
@@ -100,6 +101,15 @@ def create_job(data_in, job_name, scen_name, ign_lon, ign_lat):
     with open(job_name, 'w') as f:
         json.dump(data_in, f, indent=2)
     print('fgmj file modified')
+
+# current date for filename
+current_datetime = datetime.now()
+formatted_datetime = current_datetime.strftime("%Y-%m-%d_%H:%M")
+
+scen_name_1 = scen_name_1 + "_" + str(formatted_datetime)
+scen_name_2 = scen_name_2 + "_" + str(formatted_datetime)
+scen_name_3 = scen_name_3 + "_" + str(formatted_datetime)
+
 
 # edit the job.fgmj files and save them in repective directories
 create_job(fgmj_data1,'/testjobs/testjobs/area1/job.fgmj',scen_name_1,ignition_x_1,ignition_y_1)
