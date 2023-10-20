@@ -4,15 +4,11 @@ This repository does the required climate data edits to be used in the Canadian 
 Instructions on required packages and how to use the code are provided below.
 
 Required python modules:
+sys
 argparse
 os
-xarray
 subprocess
-numpy
-pandas
-sys
-datetime
-json
+csv
 
 Installation:
 No installation is required as the application is installed in a singularity container located in LUMI. The container takes the python scripts (python_scripts_container) as input and uses them to run both input data editing and handles the model runs.
