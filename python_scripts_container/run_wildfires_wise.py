@@ -53,13 +53,24 @@ print("Data written to 'formatted_data.txt'")
 cmd = [
     'singularity',
     'run',
-    '--bind', '/projappl/project_465000454/kolstela/wise_lumi_container/wise_lumi_files:/testjobs',
+    '--bind', '/scratch/project_465000454/kolstela/wise_lumi_files:/testjobs',
     '--bind', '/scratch/project_465000454/kolstela/wise_outputs:/testjobs/testjobs/area1/Outputs',
     '--bind', '/scratch/project_465000454/kolstela/wise_outputs:/testjobs/testjobs/area2/Outputs',
     '--bind', '/scratch/project_465000454/kolstela/wise_outputs:/testjobs/testjobs/area3/Outputs',
     '--bind', '/scratch/project_465000454/tmp/'+expid+':/input_data',
     '/projappl/project_465000454/kolstela/wise_lumi_container/wise.sif'
 ]
+
+#cmd = [
+#    'singularity',
+#    'run',
+#    '--bind', '/projappl/project_465000454/kolstela/wise_lumi_container/wise_lumi_files:/testjobs',
+#    '--bind', '/scratch/project_465000454/kolstela/wise_outputs:/testjobs/testjobs/area1/Outputs',
+#    '--bind', '/scratch/project_465000454/kolstela/wise_outputs:/testjobs/testjobs/area2/Outputs',
+#    '--bind', '/scratch/project_465000454/kolstela/wise_outputs:/testjobs/testjobs/area3/Outputs',
+#    '--bind', '/scratch/project_465000454/tmp/'+expid+':/input_data',
+#    '/projappl/project_465000454/kolstela/wise_lumi_container/wise.sif'
+#]
 
 # run the container wise.sif
 print('launching WISE runs')
