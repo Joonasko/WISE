@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 # import modules
 print('running ncdf_edits_multiarea.py')
+import os
 import argparse
 import numpy as np
 import xarray as xr
@@ -174,7 +175,7 @@ directory_stat = os.stat(current_directory)
 # get group ownership
 group_owner_gid = directory_stat.st_gid
 
-parent_directory = os.path.dirname(file_name)
+parent_directory = os.path.dirname(file_name1)
 parent_gid = os.stat(parent_directory).st_gid
 
 # change group ownership

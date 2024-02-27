@@ -13,23 +13,31 @@ in_path = '/input_data/'
 out_path = '/input_data/'
 
 # reading the run dates file
-with open('/testjobs/run_dates.txt', 'r') as file:
-    lines = file.read().splitlines()
+#with open('/testjobs/run_dates.txt', 'r') as file:
+#    lines = file.read().splitlines()
 
+# using the environment variable to get run dates
+dates_str = os.getenv('ALL_DATES')
+if dates_str:
+      year_start, year_end, month_start, month_end, day_start, day_end = dates_str.split(',')
+else:
+    print("Environment variable 'ALL_DATES' not found or is invalid.")
+    sys.exit(1)
+    
 # taking the start and end dates from the dates file
-year_start = str(lines[0])
-year_end = str(lines[1])
-month_start = str(lines[2])
-month_end = str(lines[3])
-day_start = str(lines[4])
-day_end = str(lines[5])
+#year_start = str(lines[0])
+#year_end = str(lines[1])
+#month_start = str(lines[2])
+#month_end = str(lines[3])
+#day_start = str(lines[4])
+#day_end = str(lines[5])
 
 # Provide the data file name for all variables (weekly)
-temp_name = f'{year_start}_{month_start}_{day_start}_T00_00_to_{year_end}_{month_end}_{day_end}_T23_00_2t_hourly_raw.nc' # temperature
-dewpoint_name = f'{year_start}_{month_start}_{day_start}_T00_00_to_{year_end}_{month_end}_{day_end}_T23_00_2d_hourly_raw.nc' # dewpoint temperature
-uwind_name  = f'{year_start}_{month_start}_{day_start}_T00_00_to_{year_end}_{month_end}_{day_end}_T23_00_10u_hourly_raw.nc' # u wind
-vwind_name  = f'{year_start}_{month_start}_{day_start}_T00_00_to_{year_end}_{month_end}_{day_end}_T23_00_10v_hourly_raw.nc' # v wind
-precip_name    = f'{year_start}_{month_start}_{day_start}_T00_00_to_{year_end}_{month_end}_{day_end}_T23_00_tp_hourly_raw.nc' # precipitation
+temp_name = f'{year_start}_{month_start}_{day_start}_T00_to_{year_end}_{month_end}_{day_end}_T23_2t_hourly_mean.nc' # temperature
+dewpoint_name = f'{year_start}_{month_start}_{day_start}_T00_to_{year_end}_{month_end}_{day_end}_T23_2d_hourly_mean.nc' # dewpoint temperature
+uwind_name  = f'{year_start}_{month_start}_{day_start}_T00_to_{year_end}_{month_end}_{day_end}_T23_10u_hourly_mean.nc' # u wind
+vwind_name  = f'{year_start}_{month_start}_{day_start}_T00_to_{year_end}_{month_end}_{day_end}_T23_10v_hourly_mean.nc' # v wind
+precip_name    = f'{year_start}_{month_start}_{day_start}_T00_to_{year_end}_{month_end}_{day_end}_T23_tp_hourly_mean.nc' # precipitation
 
 # read the netcdf files and take variables
 temp_nc = xr.open_dataset(in_path+temp_name)

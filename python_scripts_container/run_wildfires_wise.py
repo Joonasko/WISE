@@ -24,13 +24,17 @@ parser.add_argument('-expid', required=True, help='experiment id', default=7)
 
 # parsing the arguments
 args = parser.parse_args()
-year_start = str(args.year_start)
-month_start = str(args.month_start)
-day_start = str(args.day_start)
-year_end = str(args.year_end)
-month_end = str(args.month_end)
-day_end = str(args.day_end)
-expid = str(args.expid)
+
+# combining all dates
+all_dates = ','.join([args.year_start, args.month_start, args.day_start, args.year_end, args.month_end, args.day_end])
+
+#year_start = str(args.year_start)
+#month_start = str(args.month_start)
+#day_start = str(args.day_start)
+#year_end = str(args.year_end)
+#month_end = str(args.month_end)
+#day_end = str(args.day_end)
+#expid = str(args.expid)
 # placeholder values for manual runs
 #year_start = "2021"
 #year_end = "2021"
@@ -40,29 +44,34 @@ expid = str(args.expid)
 #day_end = "30"
 
 # create .txt file with start and end dates
-all_dates = [year_start,year_end,month_start,month_end,day_start,day_end]
+#all_dates = [year_start,year_end,month_start,month_end,day_start,day_end]
 
-file_name = '/projappl/project_465000454/kolstela/wise_lumi_container/wise_lumi_files/run_dates.txt'
-with open(file_name, 'w') as file:
-    for element in all_dates:
-        file.write(element + '\n')
+# creating a environment variable of the dates
+os.environ['ALL_DATES'] = all_dates
+
+#file_name = '/projappl/project_465000454/kolstela/wise_lumi_container/wise_lumi_files/run_dates.txt'
+#with open(file_name, 'w') as file:
+#    for element in all_dates:
+#        file.write(element + '\n')
 
 # current working dir
-current_directory = os.getcwd()
+#current_directory = os.getcwd()
 
 # get the group id
-directory_stat = os.stat(current_directory)
+#directory_stat = os.stat(current_directory)
 
 # get group ownership
-group_owner_gid = directory_stat.st_gid
+#group_owner_gid = directory_stat.st_gid
 
-parent_directory = os.path.dirname(file_name)
-parent_gid = os.stat(parent_directory).st_gid
+#parent_directory = os.path.dirname(file_name)
+#parent_gid = os.stat(parent_directory).st_gid
 
 # change group ownership
-os.chown(file_name, -1, parent_gid)
+#os.chown(file_name, -1, parent_gid)
 
-print("Data written to 'formatted_data.txt'")
+#print("Data written to 'formatted_data.txt'")
+
+print("Dates formatted, running wise container")
 
 # build the command for running the singularity container wise.sif
 cmd = [
