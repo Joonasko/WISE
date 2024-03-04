@@ -18,6 +18,7 @@ out_path = '/input_data/'
 
 # using the environment variable to get run dates
 dates_str = os.getenv('ALL_DATES')
+print(dates_str)
 if dates_str:
       year_start, year_end, month_start, month_end, day_start, day_end = dates_str.split(',')
 else:

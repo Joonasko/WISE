@@ -69,14 +69,15 @@ os.environ['ALL_DATES'] = all_dates
 # change group ownership
 #os.chown(file_name, -1, parent_gid)
 
-#print("Data written to 'formatted_data.txt'")
+# print("Data written to 'formatted_data.txt'")
 
 print("Dates formatted, running wise container")
-
+print(ALL_DATES)
 # build the command for running the singularity container wise.sif
 cmd = [
     'singularity',
     'run',
+    '--env', f'ALL_DATES={all_dates}',
     '--bind', '/projappl/project_465000454/kolstela/wise_lumi_container/wise_lumi_files:/testjobs',
     '--bind', '/scratch/project_465000454/kolstela/wise_outputs:/testjobs/testjobs/area1/Outputs',
     '--bind', '/scratch/project_465000454/kolstela/wise_outputs:/testjobs/testjobs/area2/Outputs',
