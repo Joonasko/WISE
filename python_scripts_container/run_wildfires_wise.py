@@ -82,7 +82,7 @@ cmd = [
     '--bind', '/scratch/project_465000454/kolstela/wise_outputs:/testjobs/testjobs/area1/Outputs',
     '--bind', '/scratch/project_465000454/kolstela/wise_outputs:/testjobs/testjobs/area2/Outputs',
     '--bind', '/scratch/project_465000454/kolstela/wise_outputs:/testjobs/testjobs/area3/Outputs',
-    '--bind', '/scratch/project_465000454/tmp/'+expid+':/input_data',
+    '--bind', '/scratch/project_465000454/kolstela/'+args.expid+'/tmp:/input_data',
     '/projappl/project_465000454/kolstela/wise_lumi_container/wise.sif'
 ]
 

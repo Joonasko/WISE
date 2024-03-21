@@ -89,7 +89,7 @@ dates_at_10 = combined_datetime_series[combined_datetime_series.apply(lambda x: 
 dates_at_21 = combined_datetime_series[combined_datetime_series.apply(lambda x: x.time() == pd.to_datetime('21:00:00').time())]
 
 # select the last three dates for model run
-dates_at_10 = str(dates_at_10.iloc[-3])
+dates_at_10 = str(dates_at_10.iloc[0]) #-3 original
 dates_at_10 = dates_at_10.replace(' ','T')
 dates_at_21 = str(dates_at_21.iloc[-1])
 dates_at_21 = dates_at_21.replace(' ','T')

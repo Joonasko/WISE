@@ -20,7 +20,7 @@ out_path = '/input_data/'
 dates_str = os.getenv('ALL_DATES')
 print(dates_str)
 if dates_str:
-      year_start, year_end, month_start, month_end, day_start, day_end = dates_str.split(',')
+      year_start, month_start, day_start, year_end, month_end, day_end = dates_str.split(',')
 else:
     print("Environment variable 'ALL_DATES' not found or is invalid.")
     sys.exit(1)

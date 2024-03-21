@@ -86,9 +86,13 @@ def create_job(data_in, job_name, scen_name, ign_lon, ign_lat):
 
     data_in['project']['outputs']['grids'][2]['exportTime']['time'] = output_time
 
-    data_in['project']['outputs']['grids'][2]['startExportTime']['time'] = output_time
+    data_in['project']['outputs']['grids'][3]['exportTime']['time'] = output_time
 
-    data_in['project']['outputs']['grids'][2]['startExportTime']['time'] = output_time
+    data_in['project']['outputs']['grids'][4]['exportTime']['time'] = output_time
+
+    data_in['project']['outputs']['grids'][5]['exportTime']['time'] = output_time
+
+    data_in['project']['outputs']['grids'][5]['startExportTime']['time'] = output_time
 
     data_in['project']['outputs']['vectors'][0]['perimeterTime']['startTime']['time'] = ignition_start
 
@@ -101,7 +105,6 @@ def create_job(data_in, job_name, scen_name, ign_lon, ign_lat):
     with open(job_name, 'w') as f:
         json.dump(data_in, f, indent=2)
     print('fgmj file modified')
-
 # current date for filename
 current_datetime = datetime.now()
 formatted_datetime = current_datetime.strftime("%Y-%m-%d_%H:%M")
