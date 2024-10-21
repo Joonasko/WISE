@@ -72,7 +72,7 @@ os.environ['ALL_DATES'] = all_dates
 # print("Data written to 'formatted_data.txt'")
 
 print("Dates formatted, running wise container")
-print(ALL_DATES)
+#print(ALL_DATES)
 # build the command for running the singularity container wise.sif
 cmd = [
     'singularity',
@@ -82,7 +82,7 @@ cmd = [
     '--bind', '/scratch/project_465000454/kolstela/wise_outputs:/testjobs/testjobs/area1/Outputs',
     '--bind', '/scratch/project_465000454/kolstela/wise_outputs:/testjobs/testjobs/area2/Outputs',
     '--bind', '/scratch/project_465000454/kolstela/wise_outputs:/testjobs/testjobs/area3/Outputs',
-    '--bind', '/scratch/project_465000454/kolstela/'+args.expid+'/tmp:/input_data',
+    '--bind', '/scratch/project_465000454/tmp/'+args.expid+':/input_data',
     '/projappl/project_465000454/kolstela/wise_lumi_container/wise.sif'
 ]
 

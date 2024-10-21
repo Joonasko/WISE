@@ -12,18 +12,33 @@ import csv
 in_path = '/input_data/'
 out_path = '/input_data/'
 
+parser = argparse.ArgumentParser(description='Runscript for data notifier job.')
+
+# adding year, month, day and experiment id arguments
+parser.add_argument('-year_start', required=True, help='Input year start', default=1)
+parser.add_argument('-month_start', required=True, help='Input month start', default=2)
+parser.add_argument('-day_start', required=True, help='Input day start', default=3)
+
+parser.add_argument('-year_end', required=True, help='Input year end', default=4)
+parser.add_argument('-month_end', required=True, help='Input month end', default=5)
+parser.add_argument('-day_end', required=True, help='Input day end', default=6)
+
+#parser.add_argument('-expid', required=True, help='experiment id', default=7)
+
+args = parser.parse_args()
+
 # reading the run dates file
 #with open('/testjobs/run_dates.txt', 'r') as file:
 #    lines = file.read().splitlines()
 
 # using the environment variable to get run dates
-dates_str = os.getenv('ALL_DATES')
-print(dates_str)
-if dates_str:
-      year_start, month_start, day_start, year_end, month_end, day_end = dates_str.split(',')
-else:
-    print("Environment variable 'ALL_DATES' not found or is invalid.")
-    sys.exit(1)
+# dates_str = os.getenv('ALL_DATES')
+#print(dates_str)
+#if dates_str:
+#      year_start, month_start, day_start, year_end, month_end, day_end = dates_str.split(',')
+#else:
+#    print("Environment variable 'ALL_DATES' not found or is invalid.")
+#    sys.exit(1)
     
 # taking the start and end dates from the dates file
 #year_start = str(lines[0])
@@ -34,11 +49,11 @@ else:
 #day_end = str(lines[5])
 
 # Provide the data file name for all variables (weekly)
-temp_name = f'{year_start}_{month_start}_{day_start}_T00_to_{year_end}_{month_end}_{day_end}_T23_2t_hourly_mean.nc' # temperature
-dewpoint_name = f'{year_start}_{month_start}_{day_start}_T00_to_{year_end}_{month_end}_{day_end}_T23_2d_hourly_mean.nc' # dewpoint temperature
-uwind_name  = f'{year_start}_{month_start}_{day_start}_T00_to_{year_end}_{month_end}_{day_end}_T23_10u_hourly_mean.nc' # u wind
-vwind_name  = f'{year_start}_{month_start}_{day_start}_T00_to_{year_end}_{month_end}_{day_end}_T23_10v_hourly_mean.nc' # v wind
-precip_name    = f'{year_start}_{month_start}_{day_start}_T00_to_{year_end}_{month_end}_{day_end}_T23_tp_hourly_mean.nc' # precipitation
+temp_name = f'{args.year_start}_{args.month_start}_{args.day_start}_T00_to_{args.year_end}_{args.month_end}_{args.day_end}_T23_2t_timestep_60_hourly_mean.nc' # temperature
+dewpoint_name = f'{args.year_start}_{args.month_start}_{args.day_start}_T00_to_{args.year_end}_{args.month_end}_{args.day_end}_T23_2d_timestep_60_hourly_mean.nc' # dewpoint temperature
+uwind_name  = f'{args.year_start}_{args.month_start}_{args.day_start}_T00_to_{args.year_end}_{args.month_end}_{args.day_end}_T23_10u_timestep_60_hourly_mean.nc' # u wind
+vwind_name  = f'{args.year_start}_{args.month_start}_{args.day_start}_T00_to_{args.year_end}_{args.month_end}_{args.day_end}_T23_10v_timestep_60_hourly_mean.nc' # v wind
+precip_name    = f'{args.year_start}_{args.month_start}_{args.day_start}_T00_to_{args.year_end}_{args.month_end}_{args.day_end}_T23_tp_timestep_60_hourly_mean.nc' # precipitation
 
 # read the netcdf files and take variables
 temp_nc = xr.open_dataset(in_path+temp_name)
