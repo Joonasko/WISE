@@ -1,11 +1,10 @@
-#!/usr/bin/python3
-# import modules
-print('running .fgmj modifier')
 import os
 import sys
 import json
 from datetime import datetime
 
+
+print('running .fgmj modifier')
 # take the time and ignition lat lon variables
 scenario_start = sys.argv[1]
 scenario_end = sys.argv[2]
@@ -91,7 +90,7 @@ def create_job(data_in, job_name, scen_name, ign_lon, ign_lat):
     data_in['project']['outputs']['grids'][4]['exportTime']['time'] = output_time
 
     data_in['project']['outputs']['grids'][5]['exportTime']['time'] = output_time
-    
+
     data_in['project']['outputs']['grids'][6]['exportTime']['time'] = output_time
 
     data_in['project']['outputs']['vectors'][0]['perimeterTime']['startTime']['time'] = ignition_start
@@ -106,7 +105,7 @@ def create_job(data_in, job_name, scen_name, ign_lon, ign_lat):
         json.dump(data_in, f, indent=2)
     print('fgmj file modified')
 
-    
+
 # current date for filename
 current_datetime = datetime.now()
 formatted_datetime = current_datetime.strftime("%Y-%m-%d_%H:%M")

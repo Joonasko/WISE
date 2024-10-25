@@ -1,6 +1,3 @@
-#!/usr/bin/python3
-# import modules
-print('running run_wise.py')
 import sys
 import argparse
 import os
@@ -8,6 +5,8 @@ import xarray as xr
 import subprocess
 import csv
 
+
+print('running run_wise.py')
 # defining file input / output paths
 in_path = '/input_data/'
 out_path = '/input_data/'
@@ -39,7 +38,7 @@ args = parser.parse_args()
 #else:
 #    print("Environment variable 'ALL_DATES' not found or is invalid.")
 #    sys.exit(1)
-    
+
 # taking the start and end dates from the dates file
 #year_start = str(lines[0])
 #year_end = str(lines[1])

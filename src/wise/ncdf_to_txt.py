@@ -28,15 +28,15 @@ def create_txt_file(input_file, output_file):
     ws_data = ws_var[:,lat_index,lon_index]
     wd_data = wd_var[:,lat_index,lon_index]
     precip_data = precip_var[:,lat_index,lon_index]
-    
+
 
   # Create the .txt file
   with open(output_file, 'w') as txt_file:
     # Write header row
     txt_file.write("HOURLY,HOUR,TEMP,RH,WD,WS,PRECIP\n")
-    
+
     # Write data rows
-    
+
     for i in range(len(time_values)):
       hourly_time = time_values[i].strftime("%d/%m/%Y")
       hour = time_values[i].hour

@@ -1,11 +1,11 @@
-# import modules
-print('running run_wildfires.py')
 import sys
 import argparse
 import os
 import subprocess
 import csv
 
+
+print('running run_wildfires.py')
 # parser etc. to be added in application integration
 
 # creating the parser

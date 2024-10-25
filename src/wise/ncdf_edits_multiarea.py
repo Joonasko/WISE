@@ -1,6 +1,3 @@
-#!/usr/bin/python3
-# import modules
-print('running ncdf_edits_multiarea.py')
 import os
 import argparse
 import numpy as np
@@ -10,6 +7,7 @@ import subprocess
 import sys
 from datetime import datetime
 
+print('running ncdf_edits_multiarea.py')
 # load netcdf dataset
 dataset = xr.open_dataset('/input_data/combined_ncdf.nc')
 
