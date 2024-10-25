@@ -2,7 +2,7 @@
 name = "wise"
 version = "0.1.0"
 authors = [
-  { name="Joonas Kostela", email="joonas.kostela@fmi.fi" },
+  { name="Joonas Kolstela", email="joonas.kolstela@fmi.fi" },
 ]
 description = ""
 readme = "README.txt"
