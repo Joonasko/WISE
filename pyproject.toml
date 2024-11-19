@@ -21,4 +21,4 @@ dependencies = [
 Homepage = "https://github.com/Joonasko/WISE"
 
 [project.scripts]
-run_wise = "fwi.run_wise:cli"
+run_wise = "fwi.run_wise:main"
