@@ -4,7 +4,7 @@ version = "0.1.0"
 authors = [
   { name="Joonas Kolstela", email="joonas.kolstela@fmi.fi" },
 ]
-description = ""
+description = "WISE"
 readme = "README.txt"
 requires-python = ">=3.6"
 classifiers = [
