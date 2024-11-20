@@ -4,6 +4,7 @@ import os
 import xarray as xr
 import subprocess
 import csv
+from .ncdf_edits_multiarea import ncdf_edits_multiarea
 
 
 def main():
@@ -98,10 +99,7 @@ def main():
     os.chown(file_name, -1, parent_gid)
 
     # run the ncdf_edits_multiarea.py script
-    # TODO: convert to python
-    print('staring ncdf_edits_multiarea.py')
-    cmd = ['python3','/python_scripts/ncdf_edits_multiarea.py']
-    subprocess.run(cmd + [out_path+'combined_ncdf.nc'])
+    ncdf_edits_multiarea(out_path+"combined_ncdf.nc")
 
     # run the WISE model for the three test areas in Finland
     print('launching WISE runs')

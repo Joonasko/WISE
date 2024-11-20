@@ -1,23 +1,21 @@
 import os
-import sys
 import json
 from datetime import datetime
 
 
-def main():
+def modify_fgmj(
+        scenario_start,
+        scenario_end,
+        ignition_start,
+        ignition_end,
+        ignition_y_1,
+        ignition_x_1,
+        ignition_y_2,
+        ignition_x_2,
+        ignition_y_3,
+        ignition_x_3,
+    ):
     print('running .fgmj modifier')
-    # take the time and ignition lat lon variables
-    scenario_start = sys.argv[1]
-    scenario_end = sys.argv[2]
-    ignition_start = sys.argv[3]
-    ignition_end = sys.argv[4]
-    ignition_y_1 = float(sys.argv[5])
-    ignition_x_1 = float(sys.argv[6])
-    ignition_y_2 = float(sys.argv[7])
-    ignition_x_2 = float(sys.argv[8])
-    ignition_y_3 = float(sys.argv[9])
-    ignition_x_3 = float(sys.argv[10])
-
     # set scenario names
     scen_name_1 = 'scen_kalajoki'
     scen_name_2 = 'scen_koli'
@@ -140,7 +138,3 @@ def main():
     os.chown(file_name3, -1, parent_gid)
 
     print('modify_fgmj.py done')
-
-
-if __name__ == "__main__":
-    main()

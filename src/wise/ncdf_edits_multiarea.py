@@ -3,15 +3,14 @@ import argparse
 import numpy as np
 import xarray as xr
 import pandas as pd
-import subprocess
-import sys
 from datetime import datetime
+from .modify_fgmj import modify_fgmj
 
 
-def main():
+def ncdf_edits_multiarea(dataset_path):
     print('running ncdf_edits_multiarea.py')
     # load netcdf dataset
-    dataset = xr.open_dataset('/input_data/combined_ncdf.nc')
+    dataset = xr.open_dataset(dataset_path)
 
     # calculate wind speed and direction from 10u and 10v components
     wind_speed = np.sqrt(dataset['10u']**2 + dataset['10v']**2)
@@ -184,12 +183,16 @@ def main():
     os.chown(file_name3, -1, parent_gid)
 
     # run the modify_fgmj.py script
-    # TODO: refactor
-    cmd = ['python3','/python_scripts/modify_fgmj.py']
-    arguments = [str(scenario_start),str(scenario_end),str(dates_at_10),str(dates_at_21),str(area1_lat),str(area1_lon),str(area2_lat),str(area2_lon),str(area3_lat),str(area3_lon)]
     print('ncdf_edits_multiarea.py done, starting modify_fgmj.py')
-    subprocess.run(cmd + arguments)
-
-
-if __name__ == "__main__":
-    main()
+    modify_fgmj(
+        scenario_start,
+        scenario_end,
+        dates_at_10,
+        dates_at_21,
+        area1_lat,
+        area1_lon,
+        area2_lat,
+        area2_lon,
+        area3_lat,
+        area3_lon
+    )
