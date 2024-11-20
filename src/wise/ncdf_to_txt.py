@@ -2,11 +2,11 @@ import netCDF4 as nc
 import numpy as np
 import sys
 
-lat_index = 0
-lon_index = 0
-
 
 def create_txt_file(input_file, output_file):
+    lat_index = 0
+    lon_index = 0
+
     # Open the NetCDF file
     with nc.Dataset(input_file, 'r') as dataset:
         # Get variable data
