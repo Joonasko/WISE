@@ -338,7 +338,7 @@ def ncdf_edits_multiarea(dataset_path):
     )
 
 
-def run_wise(year_start, month_start, day_start, year_end, month_end, day_end):
+def run_wise(in_path, out_path, year_start, month_start, day_start, year_end, month_end, day_end):
     print('running run_wise.py')
     # Provide the data file name for all variables (weekly)
     temp_name = f'{year_start}_{month_start}_{day_start}_T00_to_{year_end}_{month_end}_{day_end}_T23_2t_timestep_60_hourly_mean.nc' # temperature
@@ -444,6 +444,8 @@ def main():
     #day_end = str(lines[5])
 
     run_wise(
+        in_path,
+        out_path,
         args.year_start,
         args.month_start,
         args.day_start,
