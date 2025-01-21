@@ -148,20 +148,6 @@ def modify_fgmj(
     # current working dir
     current_directory = os.getcwd()
 
-    # get the group id
-    directory_stat = os.stat(current_directory)
-
-    # get group ownership
-    group_owner_gid = directory_stat.st_gid
-
-    parent_directory = os.path.dirname(file_name1)
-    parent_gid = os.stat(parent_directory).st_gid
-
-    # change group ownership
-    os.chown(file_name1, -1, parent_gid)
-    os.chown(file_name2, -1, parent_gid)
-    os.chown(file_name3, -1, parent_gid)
-
     print("modify_fgmj.py done")
 
 
