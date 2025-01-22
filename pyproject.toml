@@ -1,6 +1,6 @@
 [project]
 name = "wise"
-version = "0.1.0"
+version = "0.1.1"
 authors = [
   { name="Joonas Kolstela", email="joonas.kolstela@fmi.fi" },
 ]
