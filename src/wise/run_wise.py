@@ -19,6 +19,7 @@ def modify_fgmj(
     ignition_x_2,
     ignition_y_3,
     ignition_x_3,
+    out_path,
 ):
     print("running .fgmj modifier")
     # set scenario names
@@ -64,7 +65,9 @@ def modify_fgmj(
                     data[index] = value.replace(find, replace)
 
     # function for editing the job.fgmj files
-    def create_job(data_in, job_name, scen_name, ign_lon, ign_lat):
+    def create_job(data_in, job_name, scen_name, ign_lon, ign_lat, out_path):
+            
+    
         data_in["project"]["scenarios"]["scenarioData"][0]["startTime"]["time"] = (
             scenario_start
         )
@@ -122,7 +125,42 @@ def modify_fgmj(
         data_in["project"]["stations"]["wxStationData"][0]["streams"][0]["condition"][
             "startTime"
         ]["time"] = scenario_start
+        
+        data_in["project"]["outputs"]["grids"][0]["filename"] = (
+            out_path+"/scen0/max_intensity.tif"
+        )
+        data_in["project"]["outputs"]["grids"][1]["filename"] = (
+            out_path+"/scen0/max_flame_length.tif"
+        )
+        data_in["project"]["outputs"]["grids"][2]["filename"] = (
+            out_path+"/scen0/burn_grid.tif"
+        )
+        data_in["project"]["outputs"]["grids"][3]["filename"] = (
+            out_path+"/scen0/crown_fuel_consumed.tif"
+        )
+        data_in["project"]["outputs"]["grids"][4]["filename"] = (
+            out_path+"/scen0/surface_fuel_consumed.tif"
+        )
+        data_in["project"]["outputs"]["grids"][5]["filename"] = (
+            out_path+"/scen0/max_crown_fraction_burned.tif"
+        )
+        data_in["project"]["outputs"]["grids"][6]["filename"] = (
+            out_path+"/scen0/total_fuel_consumption.tif"
+        )
+        data_in["project"]["outputs"]["vectors"][0]["filename"] = (
+            out_path+"/scen0/perim.kml"
+        )
 
+
+        print(data_in["project"]["outputs"]["grids"][0]["filename"])
+        print(data_in["project"]["outputs"]["grids"][1]["filename"])
+        print(data_in["project"]["outputs"]["grids"][2]["filename"])
+        print(data_in["project"]["outputs"]["grids"][3]["filename"])
+        print(data_in["project"]["outputs"]["grids"][4]["filename"])
+        print(data_in["project"]["outputs"]["grids"][5]["filename"])
+        print(data_in["project"]["outputs"]["grids"][6]["filename"])
+        print(data_in["project"]["outputs"]["vectors"][0]["filename"])
+        
         replace_in_dict(data_in, "scen0", scen_name + "_" + ignition_start[0:10])
 
         with open(job_name, "w") as f:
@@ -141,9 +179,9 @@ def modify_fgmj(
     file_name1 = "/testjobs/testjobs/area1/job.fgmj"
     file_name2 = "/testjobs/testjobs/area2/job.fgmj"
     file_name3 = "/testjobs/testjobs/area3/job.fgmj"
-    create_job(fgmj_data1, file_name1, scen_name_1, ignition_x_1, ignition_y_1)
-    create_job(fgmj_data2, file_name2, scen_name_2, ignition_x_2, ignition_y_2)
-    create_job(fgmj_data3, file_name3, scen_name_3, ignition_x_3, ignition_y_3)
+    create_job(fgmj_data1, file_name1, scen_name_1, ignition_x_1, ignition_y_1,out_path)
+    create_job(fgmj_data2, file_name2, scen_name_2, ignition_x_2, ignition_y_2,out_path)
+    create_job(fgmj_data3, file_name3, scen_name_3, ignition_x_3, ignition_y_3,out_path)
 
     # current working dir
     current_directory = os.getcwd()
@@ -151,7 +189,7 @@ def modify_fgmj(
     print("modify_fgmj.py done")
 
 
-def ncdf_edits_multiarea(dataset_path):
+def ncdf_edits_multiarea(dataset_path,out_path):
     print("running ncdf_edits_multiarea.py")
     # load netcdf dataset
     dataset = xr.open_dataset(dataset_path)
@@ -355,6 +393,7 @@ def ncdf_edits_multiarea(dataset_path):
         area2_lon,
         area3_lat,
         area3_lon,
+        out_path
     )
 
 
@@ -393,7 +432,7 @@ def run_wise(
         }
     )
 
-    file_name = out_path + "combined_ncdf.nc"
+    file_name = in_path + "combined_ncdf.nc"
 
     # write the new netcdf file
     combined_nc.to_netcdf(file_name)
@@ -402,7 +441,7 @@ def run_wise(
     current_directory = os.getcwd()
 
     # run the ncdf_edits_multiarea.py script
-    ncdf_edits_multiarea(file_name)
+    ncdf_edits_multiarea(file_name,out_path)
 
     # run the WISE model for the three test areas in Finland
     print("launching WISE runs")
@@ -417,26 +456,32 @@ def run_wise(
 def main():
     # defining file input / output paths
     in_path = "/input_data/"
-    out_path = "/input_data/"
-
+    
     parser = argparse.ArgumentParser(description="Runscript for data notifier job.")
 
-    # adding year, month, day and experiment id arguments
+    # adding output path, year, month, day and experiment id arguments
     parser.add_argument(
-        "-year_start", required=True, help="Input year start", default=1
+        "-out_path", required=True, help="output data path", default=1
     )
     parser.add_argument(
-        "-month_start", required=True, help="Input month start", default=2
+        "-year_start", required=True, help="Input year start", default=2
     )
-    parser.add_argument("-day_start", required=True, help="Input day start", default=3)
+    parser.add_argument(
+        "-month_start", required=True, help="Input month start", default=3
+    )
+    parser.add_argument("-day_start", required=True, help="Input day start", default=4)
 
-    parser.add_argument("-year_end", required=True, help="Input year end", default=4)
-    parser.add_argument("-month_end", required=True, help="Input month end", default=5)
-    parser.add_argument("-day_end", required=True, help="Input day end", default=6)
+    parser.add_argument("-year_end", required=True, help="Input year end", default=5)
+    parser.add_argument("-month_end", required=True, help="Input month end", default=6)
+    parser.add_argument("-day_end", required=True, help="Input day end", default=7)
 
     # parser.add_argument('-expid', required=True, help='experiment id', default=7)
 
     args = parser.parse_args()
+
+    #out_path = out_path
+    out_path = args.out_path
+
 
     # reading the run dates file
     # with open('/testjobs/run_dates.txt', 'r') as file:
@@ -461,7 +506,7 @@ def main():
 
     run_wise(
         in_path,
-        out_path,
+        args.out_path,
         args.year_start,
         args.month_start,
         args.day_start,
