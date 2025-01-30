@@ -150,16 +150,6 @@ def modify_fgmj(
         data_in["project"]["outputs"]["vectors"][0]["filename"] = (
             out_path+"/scen0/perim.kml"
         )
-
-
-        print(data_in["project"]["outputs"]["grids"][0]["filename"])
-        print(data_in["project"]["outputs"]["grids"][1]["filename"])
-        print(data_in["project"]["outputs"]["grids"][2]["filename"])
-        print(data_in["project"]["outputs"]["grids"][3]["filename"])
-        print(data_in["project"]["outputs"]["grids"][4]["filename"])
-        print(data_in["project"]["outputs"]["grids"][5]["filename"])
-        print(data_in["project"]["outputs"]["grids"][6]["filename"])
-        print(data_in["project"]["outputs"]["vectors"][0]["filename"])
         
         replace_in_dict(data_in, "scen0", scen_name + "_" + ignition_start[0:10])
 
