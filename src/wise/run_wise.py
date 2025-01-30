@@ -126,6 +126,11 @@ def modify_fgmj(
             "startTime"
         ]["time"] = scenario_start
         
+        
+        data_in["project"]["outputs"]["summaries"][0]["filename"] = (
+            "/wise_output/scen0/summary.txt"
+        )
+        
         data_in["project"]["outputs"]["grids"][0]["filename"] = (
             "/wise_output/scen0/max_intensity.tif"
         )
@@ -156,13 +161,13 @@ def modify_fgmj(
         )
         
         data_in["project"]["grid"]["fuelMap"]["filename"] = (
-            spat_path_1+"fuel.asc"
+            spat_path+"fuel.asc"
         )
         data_in["project"]["grid"]["elevation"]["filename"] = (
-            spat_path_1+"dem.asc"
+            spat_path+"dem.asc"
         )
         data_in["project"]["grid"]["projection"]["filename"] = (
-            spat_path_1+"dem.prj"
+            spat_path+"dem.prj"
         )
         
        
