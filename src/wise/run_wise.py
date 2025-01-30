@@ -19,6 +19,7 @@ def modify_fgmj(
     ignition_x_2,
     ignition_y_3,
     ignition_x_3,
+   
 ):
     print("running .fgmj modifier")
     # set scenario names
@@ -64,7 +65,9 @@ def modify_fgmj(
                     data[index] = value.replace(find, replace)
 
     # function for editing the job.fgmj files
-    def create_job(data_in, job_name, scen_name, ign_lon, ign_lat):
+    def create_job(data_in, job_name, scen_name, ign_lon, ign_lat, weather_path,spat_path):
+            
+    
         data_in["project"]["scenarios"]["scenarioData"][0]["startTime"]["time"] = (
             scenario_start
         )
@@ -122,7 +125,47 @@ def modify_fgmj(
         data_in["project"]["stations"]["wxStationData"][0]["streams"][0]["condition"][
             "startTime"
         ]["time"] = scenario_start
-
+        
+        data_in["project"]["outputs"]["grids"][0]["filename"] = (
+            "/wise_output/scen0/max_intensity.tif"
+        )
+        data_in["project"]["outputs"]["grids"][1]["filename"] = (
+            "/wise_output/scen0/max_flame_length.tif"
+        )
+        data_in["project"]["outputs"]["grids"][2]["filename"] = (
+            "/wise_output/scen0/burn_grid.tif"
+        )
+        data_in["project"]["outputs"]["grids"][3]["filename"] = (
+            "/wise_output/scen0/crown_fuel_consumed.tif"
+        )
+        data_in["project"]["outputs"]["grids"][4]["filename"] = (
+            "/wise_output/scen0/surface_fuel_consumed.tif"
+        )
+        data_in["project"]["outputs"]["grids"][5]["filename"] = (
+            "/wise_output/scen0/max_crown_fraction_burned.tif"
+        )
+        data_in["project"]["outputs"]["grids"][6]["filename"] = (
+            "/wise_output/scen0/total_fuel_consumption.tif"
+        )
+        data_in["project"]["outputs"]["vectors"][0]["filename"] = (
+            "/wise_output/scen0/perim.kml"
+        )
+        
+        data_in["project"]["stations"]["wxStationData"][0]["streams"][0]["condition"]["filename"] = (
+            weather_path
+        )
+        
+        data_in["project"]["grid"]["fuelMap"]["filename"] = (
+            spat_path_1+"fuel.asc"
+        )
+        data_in["project"]["grid"]["elevation"]["filename"] = (
+            spat_path_1+"dem.asc"
+        )
+        data_in["project"]["grid"]["projection"]["filename"] = (
+            spat_path_1+"dem.prj"
+        )
+        
+       
         replace_in_dict(data_in, "scen0", scen_name + "_" + ignition_start[0:10])
 
         with open(job_name, "w") as f:
@@ -136,14 +179,21 @@ def modify_fgmj(
     scen_name_1 = scen_name_1 + "_" + str(formatted_datetime)
     scen_name_2 = scen_name_2 + "_" + str(formatted_datetime)
     scen_name_3 = scen_name_3 + "_" + str(formatted_datetime)
-
+    
+    weather_path_1 = "/wise_output/area1/Inputs/weather.txt"
+    weather_path_2 = "/wise_output/area2/Inputs/weather.txt"
+    weather_path_3 = "/wise_output/area3/Inputs/weather.txt"
+    spat_path_1 = "/testjobs/testjobs/area1/Inputs/"
+    spat_path_2 = "/testjobs/testjobs/area2/Inputs/"
+    spat_path_3 = "/testjobs/testjobs/area3/Inputs/"
+    
     # edit the job.fgmj files and save them in repective directories
-    file_name1 = "/testjobs/testjobs/area1/job.fgmj"
-    file_name2 = "/testjobs/testjobs/area2/job.fgmj"
-    file_name3 = "/testjobs/testjobs/area3/job.fgmj"
-    create_job(fgmj_data1, file_name1, scen_name_1, ignition_x_1, ignition_y_1)
-    create_job(fgmj_data2, file_name2, scen_name_2, ignition_x_2, ignition_y_2)
-    create_job(fgmj_data3, file_name3, scen_name_3, ignition_x_3, ignition_y_3)
+    file_name1 = "/wise_output/area1/job.fgmj"
+    file_name2 = "/wise_output/area2/job.fgmj"
+    file_name3 = "/wise_output/area3/job.fgmj"
+    create_job(fgmj_data1, file_name1, scen_name_1, ignition_x_1, ignition_y_1,weather_path_1,spat_path_1)
+    create_job(fgmj_data2, file_name2, scen_name_2, ignition_x_2, ignition_y_2,weather_path_2,spat_path_2)
+    create_job(fgmj_data3, file_name3, scen_name_3, ignition_x_3, ignition_y_3,weather_path_3,spat_path_3)
 
     # current working dir
     current_directory = os.getcwd()
@@ -331,7 +381,19 @@ def ncdf_edits_multiarea(dataset_path):
     df3["HOURLY"] = df3["HOURLY"].dt.strftime("%d/%m/%Y")
 
     # save the new .txt format weather files to their designated job folders for WISE runs
-    file_path = "/testjobs/testjobs/"
+    file_path = "/wise_output/"
+    
+    # List of directories to check and create if missing
+    directories = [
+      "/wise_output/area1/Inputs",
+      "/wise_output/area2/Inputs",
+      "/wise_output/area3/Inputs",
+    ]
+    
+    for directory in directories:
+      if not os.path.exists(directory):
+        os.makedirs(directory, exist_ok=True)
+      
     file_name1 = f"{file_path}area1/Inputs/weather.txt"
     file_name2 = f"{file_path}area2/Inputs/weather.txt"
     file_name3 = f"{file_path}area3/Inputs/weather.txt"
@@ -354,7 +416,7 @@ def ncdf_edits_multiarea(dataset_path):
         area2_lat,
         area2_lon,
         area3_lat,
-        area3_lon,
+        area3_lon
     )
 
 
@@ -393,7 +455,7 @@ def run_wise(
         }
     )
 
-    file_name = out_path + "combined_ncdf.nc"
+    file_name = in_path + "combined_ncdf.nc"
 
     # write the new netcdf file
     combined_nc.to_netcdf(file_name)
@@ -406,22 +468,31 @@ def run_wise(
 
     # run the WISE model for the three test areas in Finland
     print("launching WISE runs")
-    cmd1 = ["wise", "-r", "4", "-f", "0", "-t", "/testjobs/testjobs/area1/job.fgmj"]
+    cmd1 = ["wise", "-r", "4", "-f", "0", "-t", "/wise_output/area1/job.fgmj"]
     subprocess.run(cmd1)
-    cmd2 = ["wise", "-r", "4", "-f", "0", "-t", "/testjobs/testjobs/area2/job.fgmj"]
+    cmd2 = ["wise", "-r", "4", "-f", "0", "-t", "/wise_output/area2/job.fgmj"]
     subprocess.run(cmd2)
-    cmd3 = ["wise", "-r", "4", "-f", "0", "-t", "/testjobs/testjobs/area3/job.fgmj"]
+    cmd3 = ["wise", "-r", "4", "-f", "0", "-t", "/wise_output/area3/job.fgmj"]
     subprocess.run(cmd3)
+    
+    #cmd1 = ["wise", "-r", "4", "-f", "0", "-t", "/testjobs/testjobs/area1/job.fgmj"]
+    #subprocess.run(cmd1)
+    #cmd2 = ["wise", "-r", "4", "-f", "0", "-t", "/testjobs/testjobs/area2/job.fgmj"]
+    #subprocess.run(cmd2)
+    #cmd3 = ["wise", "-r", "4", "-f", "0", "-t", "/testjobs/testjobs/area3/job.fgmj"]
+    #subprocess.run(cmd3)
 
 
 def main():
     # defining file input / output paths
     in_path = "/input_data/"
-    out_path = "/input_data/"
-
+    
     parser = argparse.ArgumentParser(description="Runscript for data notifier job.")
 
-    # adding year, month, day and experiment id arguments
+    # adding output path, year, month, day and experiment id arguments
+    #parser.add_argument(
+    #    "-out_path", required=True, help="output data path", default=1
+    #)
     parser.add_argument(
         "-year_start", required=True, help="Input year start", default=1
     )
@@ -437,6 +508,10 @@ def main():
     # parser.add_argument('-expid', required=True, help='experiment id', default=7)
 
     args = parser.parse_args()
+
+    out_path = "/wise_output/"
+    
+
 
     # reading the run dates file
     # with open('/testjobs/run_dates.txt', 'r') as file:
