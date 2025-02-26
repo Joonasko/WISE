@@ -434,7 +434,7 @@ def run_wise(
     dewpoint_name = f"{year_start}_{month_start}_{day_start}_T00_to_{year_end}_{month_end}_{day_end}_T23_2d_timestep_60_hourly_mean.nc"  # dewpoint temperature
     uwind_name = f"{year_start}_{month_start}_{day_start}_T00_to_{year_end}_{month_end}_{day_end}_T23_10u_timestep_60_hourly_mean.nc"  # u wind
     vwind_name = f"{year_start}_{month_start}_{day_start}_T00_to_{year_end}_{month_end}_{day_end}_T23_10v_timestep_60_hourly_mean.nc"  # v wind
-    precip_name = f"{year_start}_{month_start}_{day_start}_T00_to_{year_end}_{month_end}_{day_end}_T23_avg_tprate_timestep_60_hourly_mean.nc"  # precipitation
+    precip_name = f"{year_start}_{month_start}_{day_start}_T00_00_to_{year_end}_{month_end}_{day_end}_T23_00_avg_tprate_raw_data.nc"  # precipitation
 
     # read the netcdf files and take variables
     temp_nc = xr.open_dataset(in_path + temp_name)
@@ -447,7 +447,7 @@ def run_wise(
     windv_var = windv_nc["10v"]
     temp_var = temp_nc["2t"]
     dewpoint_var = dewpoint_nc["2d"]
-    precip_var = precip_nc["tp"] * 3600
+    precip_var = precip_nc["avg_tprate"] * 3600
 
     # combine all variables into singular file
     combined_nc = xr.Dataset(
