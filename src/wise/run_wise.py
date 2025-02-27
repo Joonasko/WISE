@@ -6,7 +6,10 @@ import pandas as pd
 import subprocess
 import xarray as xr
 from datetime import datetime
-
+import geopandas as gp
+import rasterio
+from rasterio.warp import calculate_default_transform, reproject, Resampling, transform_bounds
+from affine import Affine
 
 def modify_fgmj(
     scenario_start,
@@ -204,6 +207,13 @@ def modify_fgmj(
     current_directory = os.getcwd()
 
     print("modify_fgmj.py done")
+    
+    scen_name_1 = scen_name_1 + "_" + ignition_start[0:10]
+    scen_name_2 = scen_name_2 + "_" + ignition_start[0:10]
+    scen_name_3 = scen_name_3 + "_" + ignition_start[0:10]
+    
+    
+    return scen_name_1, scen_name_2, scen_name_3
 
 
 def ncdf_edits_multiarea(dataset_path):
@@ -411,7 +421,7 @@ def ncdf_edits_multiarea(dataset_path):
 
     # run the modify_fgmj.py script
     print("ncdf_edits_multiarea.py done, starting modify_fgmj.py")
-    modify_fgmj(
+    scen_name_1,scen_name_2,scen_name_3 = modify_fgmj(
         scenario_start,
         scenario_end,
         dates_at_10,
@@ -423,6 +433,9 @@ def ncdf_edits_multiarea(dataset_path):
         area3_lat,
         area3_lon
     )
+    return scen_name_1,scen_name_2,scen_name_3
+    
+    
 
 
 def run_wise(
@@ -469,7 +482,7 @@ def run_wise(
     current_directory = os.getcwd()
 
     # run the ncdf_edits_multiarea.py script
-    ncdf_edits_multiarea(file_name)
+    scen_name_1, scen_name_2, scen_name_3 = ncdf_edits_multiarea(file_name)
 
     # run the WISE model for the three test areas in Finland
     print("launching WISE runs")
@@ -480,12 +493,92 @@ def run_wise(
     cmd3 = ["wise", "-r", "4", "-f", "0", "-t", "/wise_output/area3/job.fgmj"]
     subprocess.run(cmd3)
     
-    #cmd1 = ["wise", "-r", "4", "-f", "0", "-t", "/testjobs/testjobs/area1/job.fgmj"]
-    #subprocess.run(cmd1)
-    #cmd2 = ["wise", "-r", "4", "-f", "0", "-t", "/testjobs/testjobs/area2/job.fgmj"]
-    #subprocess.run(cmd2)
-    #cmd3 = ["wise", "-r", "4", "-f", "0", "-t", "/testjobs/testjobs/area3/job.fgmj"]
-    #subprocess.run(cmd3)
+    print("WISE runs complete, creating netcdf")
+       
+    raster_path = "/wise_output/"+scen_name_1+"/burn_grid.tif"
+    netcdf_path = f"/wise_output/{year_start}_{month_start}_{day_start}_T00_00_burn_grid.nc"
+
+    # Define raster file names
+    raster_names = [
+        "burn_grid", "crown_fuel_consumed", "max_crown_fraction_burned",
+        "max_flame_length", "max_intensity", "surface_fuel_consumed",
+        "total_fuel_consumption"
+    ]
+
+    # Base directory
+    scen_names = [scen_name_1,scen_name_2,scen_name_3]
+    base_path = f"/wise_output/"
+
+    # Loop through each raster file
+    for scen_name in scen_names:
+        for raster_name in raster_names:
+            raster_path = os.path.join(base_path, f"{scen_name}/{raster_name}.tif")
+            netcdf_path = os.path.join(base_path, f"{scen_name}/{year_start}_{month_start}_{day_start}_T00_00_{raster_name}.nc")
+
+            # Open the raster file
+            with rasterio.open(raster_path) as src:
+                # Read the raster data
+                raster_data = src.read(1)  # Read the first band
+                original_crs = src.crs
+                transform = src.transform
+                width, height = src.width, src.height
+
+                # Get the bounding box in EPSG:4326 (WGS 84)
+                minx, miny, maxx, maxy = transform_bounds(original_crs, "EPSG:4326",
+                                                          src.bounds.left, src.bounds.bottom,
+                                                          src.bounds.right, src.bounds.top)
+
+                # Generate lat/lon coordinate arrays
+                lon = np.linspace(minx, maxx, width)
+                lat = np.linspace(maxy, miny, height)  # Flip latitude to maintain correct order
+
+                # Create an xarray dataset
+                ds = xr.Dataset(
+                    {
+                        raster_name: (["lat", "lon"], raster_data),
+                    },
+                    coords={
+                        "lat": lat,
+                        "lon": lon,
+                    },
+                )
+
+                # Add metadata
+                ds[raster_name].attrs["units"] = "unknown"
+                ds[raster_name].attrs["description"] = f"{raster_name} from Raster"
+                ds.attrs["crs"] = "EPSG:4326"
+
+                # Add global attributes from temp_nc to the NetCDF output (if available)
+                for attr in ["activity", "dataset", "experiment", "generation", "type", "levtype",
+                             "model", "class", "realization", "stream", "resolution", "expver"]:
+                    if "temp_nc" in locals() and attr in temp_nc.attrs:
+                        ds.attrs[attr] = temp_nc.attrs[attr]
+
+                # Add creation history
+                ds.attrs["history"] = "Created on " + pd.Timestamp.now().strftime("%Y-%m-%d %H:%M:%S")
+
+                # Save dataset to NetCDF
+                ds.to_netcdf(netcdf_path)
+
+                print(f"NetCDF file created: {netcdf_path}")
+            
+    
+    # === Restart File Handling (Only on the 1st of the Month) ===
+        if int(day_start) == 1:
+            restart_file_path = os.path.join(base_path, f"{year_start}_{month_start}_{day_start}_T00_00_restart_file.nc")
+            prev_month = str(int(month_start) - 1).zfill(2)
+            prev_year = year_start if month_start != "01" else str(int(year_start) - 1)
+            prev_restart_file = os.path.join(base_path, f"{prev_year}_{prev_month}_{day_start}_T00_00_restart_file.nc")
+
+            # Create an empty restart file
+            restart_ds = xr.Dataset(attrs={"description": "Restart file for WISE runs"})
+            restart_ds.to_netcdf(restart_file_path)
+            print(f"Restart file created: {restart_file_path}")
+
+            # Delete the previous restart file if it exists
+            if os.path.exists(prev_restart_file):
+                os.remove(prev_restart_file)
+                print(f"Deleted previous restart file: {prev_restart_file}")
 
 
 def main():
