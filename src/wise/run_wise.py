@@ -22,25 +22,49 @@ def modify_fgmj(
     ignition_x_2,
     ignition_y_3,
     ignition_x_3,
+    ignition_y_4,
+    ignition_x_4,
+    ignition_y_5,
+    ignition_x_5,
+    ignition_y_6,
+    ignition_x_6,
+    ignition_y_7,
+    ignition_x_7,
+    ignition_y_8,
+    ignition_x_8,
+    ignition_y_9,
+    ignition_x_9,
    
 ):
+    
     print("running .fgmj modifier")
     # set scenario names
-    scen_name_1 = "scen_kalajoki"
-    scen_name_2 = "scen_koli"
-    scen_name_3 = "scen_lieksa"
+    scen_name_1 = "scen_fin_kalajoki"
+    scen_name_2 = "scen_fin_koli"
+    scen_name_3 = "scen_fin_lieksa"
+    scen_name_4 = "scen_por_1_norm"
+    scen_name_5 = "scen_por_1_break"
+    scen_name_6 = "scen_por_2_norm"
+    scen_name_7 = "scen_por_2_break"
+    scen_name_8 = "scen_por_3_norm"
+    scen_name_9 = "scen_por_3_break"
 
     # set input fgmj path and read the fgmj files
-    fgmj_path = "/testjobs/testjobs/job.fgmj"
+    fgmj_fin_path = "/testjobs/testjobs/job_fin.fgmj"
+    fgmj_por_path = "/testjobs/testjobs/job_por.fgmj"
 
-    with open(fgmj_path, "r") as f:
-        fgmj_data1 = json.load(f)
+    # Load fgmj files (3 Finland, 6 Portugal)
+    fgmj_data_list = []
+    for i in range(3):
+        with open(fgmj_fin_path, "r") as f:
+            fgmj_data_list.append(json.load(f))
+    for i in range(6):
+        with open(fgmj_por_path, "r") as f:
+            fgmj_data_list.append(json.load(f))
 
-    with open(fgmj_path, "r") as f:
-        fgmj_data2 = json.load(f)
 
-    with open(fgmj_path, "r") as f:
-        fgmj_data3 = json.load(f)
+
+
 
     # set variables
     scenario_start = ignition_start
@@ -172,8 +196,7 @@ def modify_fgmj(
         data_in["project"]["grid"]["projection"]["filename"] = (
             spat_path+"dem.prj"
         )
-        
-       
+               
         replace_in_dict(data_in, "scen0", scen_name + "_" + ignition_start[0:10])
 
         with open(job_name, "w") as f:
@@ -184,36 +207,54 @@ def modify_fgmj(
     current_datetime = datetime.now()
     formatted_datetime = current_datetime.strftime("%Y-%m-%d_%H:%M")
 
-    scen_name_1 = scen_name_1 + "_" + str(formatted_datetime)
-    scen_name_2 = scen_name_2 + "_" + str(formatted_datetime)
-    scen_name_3 = scen_name_3 + "_" + str(formatted_datetime)
-    
-    weather_path_1 = "/wise_output/area1/Inputs/weather.txt"
-    weather_path_2 = "/wise_output/area2/Inputs/weather.txt"
-    weather_path_3 = "/wise_output/area3/Inputs/weather.txt"
-    spat_path_1 = "/testjobs/testjobs/area1/Inputs/"
-    spat_path_2 = "/testjobs/testjobs/area2/Inputs/"
-    spat_path_3 = "/testjobs/testjobs/area3/Inputs/"
-    
-    # edit the job.fgmj files and save them in repective directories
-    file_name1 = "/wise_output/area1/job.fgmj"
-    file_name2 = "/wise_output/area2/job.fgmj"
-    file_name3 = "/wise_output/area3/job.fgmj"
-    create_job(fgmj_data1, file_name1, scen_name_1, ignition_x_1, ignition_y_1,weather_path_1,spat_path_1)
-    create_job(fgmj_data2, file_name2, scen_name_2, ignition_x_2, ignition_y_2,weather_path_2,spat_path_2)
-    create_job(fgmj_data3, file_name3, scen_name_3, ignition_x_3, ignition_y_3,weather_path_3,spat_path_3)
+    # List of scenario names
+    scen_names = [
+        scen_name_1, scen_name_2, scen_name_3,
+        scen_name_4, scen_name_5, scen_name_6,
+        scen_name_7, scen_name_8, scen_name_9
+    ]
 
-    # current working dir
-    current_directory = os.getcwd()
 
+    # Corresponding weather paths
+    weather_paths = [f"/wise_output/area{i}/Inputs/weather.txt" for i in range(1, 10)]
+
+    # Corresponding spat paths
+    spat_paths = [f"/testjobs/testjobs/area{i}/Inputs/" for i in range(1, 10)]
+
+    # Corresponding job filenames
+    job_files = [f"/wise_output/area{i}/job.fgmj" for i in range(1, 10)]
+
+    # Corresponding ignition coordinates
+    ignition_x = [ignition_x_1, ignition_x_2, ignition_x_3,
+                ignition_x_4, ignition_x_5, ignition_x_6,
+                ignition_x_7, ignition_x_8, ignition_x_9]
+
+    ignition_y = [ignition_y_1, ignition_y_2, ignition_y_3,
+                ignition_y_4, ignition_y_5, ignition_y_6,
+                ignition_y_7, ignition_y_8, ignition_y_9]
+
+    # Append formatted datetime to all scenario names
+    scen_names = [name + "_" + str(formatted_datetime) for name in scen_names]
+
+    # Create job files
+    for i in range(9):
+        create_job(
+            fgmj_data_list[i],
+            job_files[i],
+            scen_names[i],
+            ignition_x[i],
+            ignition_y[i],
+            weather_paths[i],
+            spat_paths[i]
+        )
+
+    # Append ignition start date to scenario names to match the folder names created by WISE
+    scen_names = [name + "_" + ignition_start[:10] for name in scen_names]
+
+    # Print done message
     print("modify_fgmj.py done")
     
-    scen_name_1 = scen_name_1 + "_" + ignition_start[0:10]
-    scen_name_2 = scen_name_2 + "_" + ignition_start[0:10]
-    scen_name_3 = scen_name_3 + "_" + ignition_start[0:10]
-    
-    
-    return scen_name_1, scen_name_2, scen_name_3
+    return scen_names[0], scen_names[1], scen_names[2], scen_names[3], scen_names[4], scen_names[5], scen_names[6], scen_names[7], scen_names[8] 
 
 
 def ncdf_edits_multiarea(dataset_path):
@@ -241,49 +282,61 @@ def ncdf_edits_multiarea(dataset_path):
     dataset["relative_humidity"] = relative_humidity
     dataset["temperature"] = temperature_celsius
 
-    # set the ignition coordinates for the three test areas
+    # set the ignition coordinates for the nine test areas
     area1_lat = 64.007044
     area1_lon = 24.152986
 
     area2_lat = 63.050609
     area2_lon = 29.889436
 
-    area3_lat = 63.433749
-    area3_lon = 30.540424
+    area3_lat = 63.436092
+    area3_lon = 30.541259
+
+    area4_lat = 40.041393
+    area4_lon = -8.114061
+
+    area5_lat = 40.041393
+    area5_lon = -8.114061
+
+    area6_lat = 40.196173
+    area6_lon = -8.137504
+
+    area7_lat = 40.196173
+    area7_lon = -8.137504
+
+    area8_lat = 40.125040
+    area8_lon = -8.113300
+
+    area9_lat = 40.125040
+    area9_lon = -8.113300
+
 
     # select only closest cell from netcdf to each ignition location
-    nearest_cell1 = dataset.sel(lat=area1_lat, lon=area1_lon, method="nearest")
-    nearest_cell2 = dataset.sel(lat=area2_lat, lon=area2_lon, method="nearest")
-    nearest_cell3 = dataset.sel(lat=area3_lat, lon=area3_lon, method="nearest")
+    area_coords = [
+        (area1_lat, area1_lon), (area2_lat, area2_lon), (area3_lat, area3_lon),
+        (area4_lat, area4_lon), (area5_lat, area5_lon), (area6_lat, area6_lon),
+        (area7_lat, area7_lon), (area8_lat, area8_lon), (area9_lat, area9_lon)
+    ]
+    
+    dataframes = []
+    for lat, lon in area_coords:
+        nearest_cell = dataset.sel(lat=lat, lon=lon, method="nearest")
+        dataframes.append(nearest_cell.to_dataframe())
 
-    df1 = nearest_cell1.to_dataframe()
-    df2 = nearest_cell2.to_dataframe()
-    df3 = nearest_cell3.to_dataframe()
 
     # make required dataframe edits
-    df1.reset_index(inplace=True)
-    df1.set_index("time", inplace=True)
-    df2.reset_index(inplace=True)
-    df2.set_index("time", inplace=True)
-    df3.reset_index(inplace=True)
-    df3.set_index("time", inplace=True)
-
-    df1["date"] = df1.index.date
-    df1["hour"] = df1.index.time
-    df2["date"] = df2.index.date
-    df2["hour"] = df2.index.time
-    df3["date"] = df3.index.date
-    df3["hour"] = df3.index.time
-
-    # remove unused variables
     variables_to_drop = ["10v", "10u", "2t", "2d"]
-    df1 = df1.drop(variables_to_drop, axis=1)
-    df2 = df2.drop(variables_to_drop, axis=1)
-    df3 = df3.drop(variables_to_drop, axis=1)
+    for i, df in enumerate(dataframes):
+        df.reset_index(inplace=True)
+        df.set_index("time", inplace=True)
+        df["date"] = df.index.date
+        df["hour"] = df.index.time
+        dataframes[i] = df.drop(variables_to_drop, axis=1)
+
 
     # create datetime series for scenario start and end times (start at each day 10:00 and end same day 21:00)
-    combined_datetime_series = pd.to_datetime(df1.index.date) + pd.to_timedelta(
-        [time.hour for time in df1.index], unit="h"
+    combined_datetime_series = pd.to_datetime(dataframes[0].index.date) + pd.to_timedelta(
+        [time.hour for time in dataframes[0].index], unit="h"
     )
     combined_datetime_series = pd.Series(combined_datetime_series)
 
@@ -292,7 +345,8 @@ def ncdf_edits_multiarea(dataset_path):
 
     # select scenario start and end dates
     scenario_start = str(combined_datetime_series.iloc[1])
-    scenario_end = str(combined_datetime_series.iloc[-2])
+#    scenario_end = str(combined_datetime_series.iloc[-2])
+    scenario_end = str(combined_datetime_series.iloc[-4])
     scenario_start = scenario_start.replace(" ", "T")
     scenario_end = scenario_end.replace(" ", "T")
     scenario_start = scenario_start + ":00"
@@ -317,111 +371,46 @@ def ncdf_edits_multiarea(dataset_path):
     dates_at_10 = dates_at_10 + ":00"
     dates_at_21 = dates_at_21 + ":00"
 
-    df1.reset_index(inplace=True)
-    df2.reset_index(inplace=True)
-    df3.reset_index(inplace=True)
-
-    # set column order
-    new_column_order = [
-        "date",
-        "hour",
-        "temperature",
-        "relative_humidity",
-        "wind_direction",
-        "wind_speed",
-        "tp",
-    ]
-    df1 = df1[new_column_order]
-    df2 = df2[new_column_order]
-    df3 = df3[new_column_order]
-
-    # Rename the columns
-    df1.rename(
-        columns={
-            "date": "HOURLY",
-            "hour": "HOUR",
-            "temperature": "TEMP",
-            "relative_humidity": "RH",
-            "wind_direction": "WD",
-            "wind_speed": "WS",
-            "tp": "PRECIP",
-        },
-        inplace=True,
-    )
-
-    df2.rename(
-        columns={
-            "date": "HOURLY",
-            "hour": "HOUR",
-            "temperature": "TEMP",
-            "relative_humidity": "RH",
-            "wind_direction": "WD",
-            "wind_speed": "WS",
-            "tp": "PRECIP",
-        },
-        inplace=True,
-    )
-
-    df3.rename(
-        columns={
-            "date": "HOURLY",
-            "hour": "HOUR",
-            "temperature": "TEMP",
-            "relative_humidity": "RH",
-            "wind_direction": "WD",
-            "wind_speed": "WS",
-            "tp": "PRECIP",
-        },
-        inplace=True,
-    )
-
-    # convert 'date' to datetime format
-    df1["HOURLY"] = pd.to_datetime(df1["HOURLY"], format="%d/%m/%Y")
-    df2["HOURLY"] = pd.to_datetime(df2["HOURLY"], format="%d/%m/%Y")
-    df3["HOURLY"] = pd.to_datetime(df3["HOURLY"], format="%d/%m/%Y")
-
-    # convert 'hour' to integers
-    df1["HOUR"] = df1["HOUR"].apply(lambda x: x.hour).astype(int)
-    df2["HOUR"] = df2["HOUR"].apply(lambda x: x.hour).astype(int)
-    df3["HOUR"] = df3["HOUR"].apply(lambda x: x.hour).astype(int)
-
-    # round all values to one decimal place
-    df1 = df1.round(1)
-    df2 = df2.round(1)
-    df3 = df3.round(1)
-
-    # format the 'date' column as 'dd/mm/yyyy'
-    df1["HOURLY"] = df1["HOURLY"].dt.strftime("%d/%m/%Y")
-    df2["HOURLY"] = df2["HOURLY"].dt.strftime("%d/%m/%Y")
-    df3["HOURLY"] = df3["HOURLY"].dt.strftime("%d/%m/%Y")
+    # set column order and rename
+    new_column_order = ["date", "hour", "temperature", "relative_humidity", "wind_direction", "wind_speed", "tp"]
+    column_rename_map = {
+        "date": "HOURLY",
+        "hour": "HOUR",
+        "temperature": "TEMP",
+        "relative_humidity": "RH",
+        "wind_direction": "WD",
+        "wind_speed": "WS",
+        "tp": "PRECIP",
+    }
+    
+    for i in range(len(dataframes)):
+        dataframes[i].reset_index(inplace=True)
+        dataframes[i] = dataframes[i][new_column_order].copy()
+        dataframes[i].rename(columns=column_rename_map, inplace=True)
+        dataframes[i]["HOURLY"] = pd.to_datetime(dataframes[i]["HOURLY"], format="%d/%m/%Y")
+        dataframes[i]["HOUR"] = dataframes[i]["HOUR"].apply(lambda x: x.hour).astype(int)
+        dataframes[i] = dataframes[i].round(1)
+        dataframes[i]["HOURLY"] = dataframes[i]["HOURLY"].dt.strftime("%d/%m/%Y")
 
     # save the new .txt format weather files to their designated job folders for WISE runs
     file_path = "/wise_output/"
     
-    # List of directories to check and create if missing
-    directories = [
-      "/wise_output/area1/Inputs",
-      "/wise_output/area2/Inputs",
-      "/wise_output/area3/Inputs",
-    ]
-    
-    for directory in directories:
-      if not os.path.exists(directory):
-        os.makedirs(directory, exist_ok=True)
-      
-    file_name1 = f"{file_path}area1/Inputs/weather.txt"
-    file_name2 = f"{file_path}area2/Inputs/weather.txt"
-    file_name3 = f"{file_path}area3/Inputs/weather.txt"
-    df1.to_csv((file_name1), sep=",", index=False)
-    df2.to_csv((file_name2), sep=",", index=False)
-    df3.to_csv((file_name3), sep=",", index=False)
+    # Create directories and save weather files
+    for i in range(1, 10):
+        directory = f"/wise_output/area{i}/Inputs"
+        if not os.path.exists(directory):
+            os.makedirs(directory, exist_ok=True)
+        
+        file_name = f"{file_path}area{i}/Inputs/weather.txt"
+        dataframes[i-1].to_csv(file_name, sep=",", index=False)
+
 
     # current working dir
     current_directory = os.getcwd()
 
     # run the modify_fgmj.py script
     print("ncdf_edits_multiarea.py done, starting modify_fgmj.py")
-    scen_name_1,scen_name_2,scen_name_3 = modify_fgmj(
+    scen_name_1,scen_name_2,scen_name_3,scen_name_4,scen_name_5,scen_name_6,scen_name_7,scen_name_8,scen_name_9 = modify_fgmj(
         scenario_start,
         scenario_end,
         dates_at_10,
@@ -431,9 +420,22 @@ def ncdf_edits_multiarea(dataset_path):
         area2_lat,
         area2_lon,
         area3_lat,
-        area3_lon
+        area3_lon,
+        area4_lat,
+        area4_lon,
+        area5_lat,
+        area5_lon,
+        area6_lat,
+        area6_lon,
+        area7_lat,
+        area7_lon,
+        area8_lat,
+        area8_lon,
+        area9_lat,
+        area9_lon
+
     )
-    return scen_name_1,scen_name_2,scen_name_3
+    return scen_name_1,scen_name_2,scen_name_3,scen_name_4,scen_name_5,scen_name_6,scen_name_7,scen_name_8,scen_name_9
     
     
 
@@ -482,17 +484,15 @@ def run_wise(
     current_directory = os.getcwd()
 
     # run the ncdf_edits_multiarea.py script
-    scen_name_1, scen_name_2, scen_name_3 = ncdf_edits_multiarea(file_name)
+    scen_name_1, scen_name_2, scen_name_3, scen_name_4, scen_name_5, scen_name_6, scen_name_7, scen_name_8, scen_name_9 = ncdf_edits_multiarea(file_name)
 
-    # run the WISE model for the three test areas in Finland
+    # run the WISE model for all test areas
     print("launching WISE runs")
-    cmd1 = ["wise", "-r", "4", "-f", "0", "-t", "/wise_output/area1/job.fgmj"]
-    subprocess.run(cmd1)
-    cmd2 = ["wise", "-r", "4", "-f", "0", "-t", "/wise_output/area2/job.fgmj"]
-    subprocess.run(cmd2)
-    cmd3 = ["wise", "-r", "4", "-f", "0", "-t", "/wise_output/area3/job.fgmj"]
-    subprocess.run(cmd3)
-    
+    for i in range(1, 10):
+        cmd = ["wise", "-r", "4", "-f", "0", "-t", f"/wise_output/area{i}/job.fgmj"]
+        subprocess.run(cmd)
+
+
     print("WISE runs complete, creating netcdf")
        
     raster_path = "/wise_output/"+scen_name_1+"/burn_grid.tif"
@@ -506,7 +506,7 @@ def run_wise(
     ]
 
     # Base directory
-    scen_names = [scen_name_1,scen_name_2,scen_name_3]
+    scen_names = [scen_name_1,scen_name_2,scen_name_3,scen_name_4,scen_name_5,scen_name_6,scen_name_7,scen_name_8,scen_name_9]
     base_path = f"/wise_output/"
 
     # Loop through each raster file
@@ -587,10 +587,6 @@ def main():
     
     parser = argparse.ArgumentParser(description="Runscript for data notifier job.")
 
-    # adding output path, year, month, day and experiment id arguments
-    #parser.add_argument(
-    #    "-out_path", required=True, help="output data path", default=1
-    #)
     parser.add_argument(
         "-year_start", required=True, help="Input year start", default=1
     )
@@ -608,29 +604,6 @@ def main():
     args = parser.parse_args()
 
     out_path = "/wise_output/"
-    
-
-
-    # reading the run dates file
-    # with open('/testjobs/run_dates.txt', 'r') as file:
-    #    lines = file.read().splitlines()
-
-    # using the environment variable to get run dates
-    # dates_str = os.getenv('ALL_DATES')
-    # print(dates_str)
-    # if dates_str:
-    #      year_start, month_start, day_start, year_end, month_end, day_end = dates_str.split(',')
-    # else:
-    #    print("Environment variable 'ALL_DATES' not found or is invalid.")
-    #    sys.exit(1)
-
-    # taking the start and end dates from the dates file
-    # year_start = str(lines[0])
-    # year_end = str(lines[1])
-    # month_start = str(lines[2])
-    # month_end = str(lines[3])
-    # day_start = str(lines[4])
-    # day_end = str(lines[5])
 
     run_wise(
         in_path,
@@ -646,3 +619,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
+
